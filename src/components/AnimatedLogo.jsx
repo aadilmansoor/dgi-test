@@ -1,88 +1,114 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import { flushSync } from "react-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function AnimatedLogo() {
+// Where the icon sits inside logo.png (1934 × 663), as fractions of the image.
+// Group 36.png is that same icon on its own, so placing logo.png with these
+// points over it makes the two pixel-aligned and the swap between them invisible.
+const ICON_CX     = 215 / 1934;   // icon centre-x
+const ICON_CY     = 328.5 / 663;  // icon centre-y
+const ICON_H      = 609 / 1934;   // icon height, relative to logo width
+const ICON_CLIP_R = 80;           // right inset (%) that shows only the icon
+
+const REVEAL_END = 0.45;          // 0 → 45 %: text reveals · 45 → 100 %: fly to navbar
+const NAV_H      = 80;            // header h-20
+const NAV_LOGO_W = 120;           // Header lg:w-[120px]
+
+const lerp    = (a, b, p) => a + (b - a) * p;
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+export default function AnimatedLogo({ onDockedChange }) {
   const iconRef = useRef(null); // Group 36.png — hero icon
   const logoRef = useRef(null); // logo.png  — full logo
+  const dockedRef = useRef(false);
+  const onDockedChangeRef = useRef(onDockedChange);
+
+  // keep the latest callback without re-running the animation setup
+  useEffect(() => { onDockedChangeRef.current = onDockedChange; }, [onDockedChange]);
 
   useEffect(() => {
     const icon = iconRef.current;
     const logo = logoRef.current;
     if (!icon || !logo) return;
 
-    // ── Target: Header logo position ───────────────────────────────────────
-    const navH       = 80;                          // header h-20
-    const navLogoW   = 120;                         // Header lg:w-[120px]
-    const navCenterY = navH / 2;                    // 40px from top
-    const heroLogoW  = logo.offsetWidth;            // e.g. 800px (CSS clamp resolved)
-    const navScale   = navLogoW / heroLogoW;
+    let startScale, navScale, deltaY;
+    const measure = () => {
+      const logoW = logo.offsetWidth;                         // CSS clamp resolved
+      startScale  = icon.offsetHeight / (logoW * ICON_H);     // logo's icon == Group 36 size
+      navScale    = NAV_LOGO_W / logoW;
+      deltaY      = NAV_H / 2 - window.innerHeight / 2;       // hero centre → navbar centre
+    };
 
-    // ── Initial GSAP state ────────────────────────────────────────────────
-    gsap.set(icon, { opacity: 1 });
+    // One continuous motion, driven by a single scrubbed value t (0 → 1):
+    //   t = 0         Group 36.png on screen
+    //   t > 0         swapped for logo.png, clipped to its icon and laid exactly
+    //                 over Group 36 — no fade, so nothing blinks
+    //   0 → REVEAL    text unclips while the lock-up re-centres and settles to 1×
+    //   REVEAL → 1    lock-up flies + shrinks onto the navbar logo
+    //   t = 1         swapped for the navbar logo (same image, same spot)
+    const state = { t: 0 };
+    const render = () => {
+      const { t } = state;
+      const r = clamp01(t / REVEAL_END);
+      const f = clamp01((t - REVEAL_END) / (1 - REVEAL_END));
 
-    // logo.png: GSAP manages ALL transforms (no inline transform on element)
-    // xPercent:-10 → icon centre (≈10 % from left) lands at left:50% = 50 vw
-    // yPercent:-50 → vertically centres element at top:50%
-    gsap.set(logo, {
-      xPercent: -10,
-      yPercent: -50,
-      clipPath:  "inset(0 80% 0 0)",
-      opacity:   0,   // already 0 via inline style; re-affirm for GSAP ownership
-      scale:     1,
-      y:         0,
-    });
+      const scale = f > 0 ? lerp(1, navScale, f) : lerp(startScale, 1, r);
+      // Anchor point inside the logo that sits at the viewport centre: the icon
+      // at first, the middle of the full logo once the text is revealed.
+      const cx = lerp(ICON_CX, 0.5, r);
+      const cy = lerp(ICON_CY, 0.5, r);
+      const xp = -50 - 100 * scale * (cx - 0.5);
+      const yp = -50 - 100 * scale * (cy - 0.5);
 
-    // Measure hero centre-Y after gsap.set has repositioned the element
-    const rect        = logo.getBoundingClientRect();
-    const heroCenterY = rect.top + rect.height / 2;   // ≈ 50 vh
-    const deltaY      = navCenterY - heroCenterY;      // negative (move up)
+      const started = t > 0;
+      const docked  = t >= 0.999;
+
+      icon.style.opacity    = started ? "0" : "1";
+      logo.style.opacity    = started ? "1" : "0";
+      logo.style.visibility = docked ? "hidden" : "";
+      logo.style.clipPath   = `inset(0 ${ICON_CLIP_R * (1 - r)}% 0 0)`;
+      logo.style.transform  = `translate(${xp}%, ${yp}%) translateY(${deltaY * f}px) scale(${scale})`;
+
+      // Hand-off to the static navbar logo. flushSync commits it in this same
+      // frame, so the two logos never both disappear (or both show) for a frame.
+      if (docked !== dockedRef.current) {
+        dockedRef.current = docked;
+        flushSync(() => onDockedChangeRef.current?.(docked));
+      }
+    };
+
+    measure();
+    render();
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
+      gsap.to(state, {
+        t:        1,
+        ease:     "none",
+        onUpdate: render,
         scrollTrigger: {
-          trigger: document.body,
-          start:   0,
-          end:     () => window.innerHeight,
-          scrub:   0.6,
+          trigger:   document.body,
+          start:     0,
+          end:       () => window.innerHeight,
+          scrub:     0.6,
+          onRefresh: () => { measure(); render(); },
         },
       });
-
-      // ── Phase 1a (0 → 25 %): Group 36.png fades out COMPLETELY ─────────
-      // logo.png is still invisible — no overlap, no misalignment.
-      tl.to(icon, { opacity: 0, ease: "none", duration: 0.25 }, 0);
-
-      // ── Phase 1b (25 → 55 %): logo.png fades in + text slides in ───────
-      // Only starts once Group 36.png is gone.
-      // Clip goes from "icon only" → full logo (text slides in from right).
-      tl.to(logo, {
-        opacity:  1,
-        clipPath: "inset(0 0% 0 0)",
-        ease:     "none",
-        duration: 0.3,
-      }, 0.25);
-
-      // ── Phase 2 (55 → 92 %): complete logo flies to exact navbar pos ───
-      // xPercent: -50  re-centres full logo (not just icon)
-      // y: deltaY      moves from 50 vh down to 40 px (navbar centre)
-      // scale          shrinks to 120 px wide (navbar logo size)
-      tl.to(logo, {
-        xPercent: -50,
-        y:        deltaY,
-        scale:    navScale,
-        ease:     "none",
-        duration: 0.37,
-      }, 0.55);
-
-      // ── Phase 3 (92 → 100 %): fade out; Header static logo takes over ──
-      tl.to(logo, { opacity: 0, ease: "none", duration: 0.08 }, 0.92);
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      icon.style.opacity = "";
+      Object.assign(logo.style, { opacity: "0", visibility: "", clipPath: "", transform: "" });
+      if (dockedRef.current) {
+        dockedRef.current = false;
+        onDockedChangeRef.current?.(false);
+      }
+    };
   }, []);
 
   return (
@@ -104,9 +130,8 @@ export default function AnimatedLogo() {
 
       {/*
         logo.png — opacity:0 in inline style so it is invisible on first paint,
-        before useEffect runs and GSAP takes ownership.
-        GSAP controls ALL transforms; no inline transform here.
-        left:50% + top:50% are the CSS anchor; GSAP adds xPercent/yPercent/y/scale.
+        before useEffect runs and takes over its transform / clip / opacity.
+        left:50% + top:50% are the CSS anchor the transform is computed from.
       */}
       <img
         ref={logoRef}

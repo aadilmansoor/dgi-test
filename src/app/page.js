@@ -28,7 +28,6 @@ export default function Home() {
   const [isLogoRed, setIsLogoRed] = useState(false);
   const whiteGradientRef = useRef(null);
   const portfolioRef = useRef(null);
-  const logoTimerRef = useRef(null);
 
   useEffect(() => {
     const handleWheel = (e) => {
@@ -46,29 +45,28 @@ export default function Home() {
   }, [isScrolled]);
 
   useEffect(() => {
-    clearTimeout(logoTimerRef.current);
-    if (isScrolled) {
-      const targetScroll = window.innerHeight;
-      gsap.to(window, {
-        scrollTo: { y: targetScroll, autoKill: false },
-        duration: 0.6,
-        ease: "none",
-        onComplete: () => {
-          ScrollTrigger.refresh();
-          // Wait for AnimatedLogo scrub (0.6s lag) + phase-3 fade to fully finish
-          // before revealing the static navbar logo
-          logoTimerRef.current = setTimeout(() => setIsNavLogoVisible(true), 400);
-        },
-      });
-    } else {
-      // Hide navbar logo immediately so AnimatedLogo can reverse cleanly
-      setIsNavLogoVisible(false);
-      gsap.to(window, {
-        scrollTo: { y: 0, autoKill: false },
-        duration: 0.6,
-        ease: "none",
-      });
-    }
+    // <html> has `scroll-smooth`, which turns each per-frame window.scrollTo()
+    // of this tween into a smooth scroll that the next frame cancels, so the
+    // page never actually moves. Switch it off while the tween runs.
+    const html = document.documentElement;
+    const restoreScrollBehavior = () => { html.style.scrollBehavior = ""; };
+    html.style.scrollBehavior = "auto";
+
+    // No ScrollTrigger.refresh() here: nothing changes layout, and a refresh
+    // snaps AnimatedLogo's scrubbed animation straight to its end mid-flight.
+    // The navbar logo is revealed by AnimatedLogo's onDockedChange once the
+    // flying logo has landed on it.
+    const tween = gsap.to(window, {
+      scrollTo: { y: isScrolled ? window.innerHeight : 0, autoKill: false },
+      duration: 0.6,
+      ease: "none",
+      onComplete: restoreScrollBehavior,
+    });
+
+    return () => {
+      tween.kill();
+      restoreScrollBehavior();
+    };
   }, [isScrolled]);
 
   // ScrollTrigger for nav color change when white gradient reaches top
@@ -139,7 +137,7 @@ export default function Home() {
         
         {/* Animated Logo Overlay - Desktop Only */}
         <div className="hidden lg:block">
-          <AnimatedLogo />
+          <AnimatedLogo onDockedChange={setIsNavLogoVisible} />
         </div>
 
         {/* Content stack that slides up */}

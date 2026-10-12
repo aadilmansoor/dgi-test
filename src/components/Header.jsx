@@ -143,6 +143,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
   };
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-50 ${headerBg}`}
       style={{
@@ -234,7 +235,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
           {/* Center Logo (Desktop) */}
           <Link
             href="/"
-            className={`hidden lg:block absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 transition-opacity duration-300 ${hideLogo ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            className={`hidden lg:block absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 ${hideLogo ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
             <img src={logoSrc} alt="Decograph Interiors" className="w-[75px] md:w-[98px] lg:w-[120px] h-auto" />
           </Link>
@@ -252,6 +253,27 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
           </Link>
         </nav>
       </div>
+
+      {/* Mobile Gradient - Always Visible (Hidden when menu is open or hideGradient is true) */}
+      {!isMenuOpen && !hideGradient && (
+        <div
+          className="lg:hidden absolute left-0 right-0 h-16 top-full -mt-px"
+          style={{
+            backgroundImage: 'linear-gradient(hsl(0, 0%, 100%), hsla(0, 0%, 100%, 0.98759) 9.9%, hsla(0, 0%, 100%, 0.96314) 19.5%, hsla(0, 0%, 100%, 0.926) 28.7%, hsla(0, 0%, 100%, 0.87667) 37.3%, hsla(0, 0%, 100%, 0.81624) 45.2%, hsla(0, 0%, 100%, 0.74699) 52.3%, hsla(0, 0%, 100%, 0.66999) 58.7%, hsla(0, 0%, 100%, 0.58775) 64.4%, hsla(0, 0%, 100%, 0.50184) 69.5%, hsla(0, 0%, 100%, 0.41394) 74.1%, hsla(0, 0%, 100%, 0.3238) 78.4%, hsla(0, 0%, 100%, 0.23172) 82.6%, hsla(0, 0%, 100%, 0.1409) 86.9%, hsla(0, 0%, 100%, 0.0541) 92%, hsla(0, 0%, 100%, 0))'
+          }}
+        />
+      )}
+
+      {/* Desktop fade effect - only visible when white background and hideGradient is false */}
+      {isWhiteBg && !hideGradient && (
+        <div
+          className="hidden lg:block absolute left-0 right-0 h-24 -bottom-24"
+          style={{
+            backgroundImage: 'linear-gradient(hsl(0, 0%, 100%), hsla(0, 0%, 100%, 0.98759) 9.9%, hsla(0, 0%, 100%, 0.96314) 19.5%, hsla(0, 0%, 100%, 0.926) 28.7%, hsla(0, 0%, 100%, 0.87667) 37.3%, hsla(0, 0%, 100%, 0.81624) 45.2%, hsla(0, 0%, 100%, 0.74699) 52.3%, hsla(0, 0%, 100%, 0.66999) 58.7%, hsla(0, 0%, 100%, 0.58775) 64.4%, hsla(0, 0%, 100%, 0.50184) 69.5%, hsla(0, 0%, 100%, 0.41394) 74.1%, hsla(0, 0%, 100%, 0.3238) 78.4%, hsla(0, 0%, 100%, 0.23172) 82.6%, hsla(0, 0%, 100%, 0.1409) 86.9%, hsla(0, 0%, 100%, 0.0541) 92%, hsla(0, 0%, 100%, 0))'
+          }}
+        />
+      )}
+    </header>
 
       {/* Mobile Full Screen Menu */}
       <div
@@ -335,26 +357,6 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
           </span>
         </div>
       </div>
-
-      {/* Mobile Gradient - Always Visible (Hidden when menu is open or hideGradient is true) */}
-      {!isMenuOpen && !hideGradient && (
-        <div
-          className="lg:hidden absolute left-0 right-0 h-16 top-full -mt-px"
-          style={{
-            backgroundImage: 'linear-gradient(hsl(0, 0%, 100%), hsla(0, 0%, 100%, 0.98759) 9.9%, hsla(0, 0%, 100%, 0.96314) 19.5%, hsla(0, 0%, 100%, 0.926) 28.7%, hsla(0, 0%, 100%, 0.87667) 37.3%, hsla(0, 0%, 100%, 0.81624) 45.2%, hsla(0, 0%, 100%, 0.74699) 52.3%, hsla(0, 0%, 100%, 0.66999) 58.7%, hsla(0, 0%, 100%, 0.58775) 64.4%, hsla(0, 0%, 100%, 0.50184) 69.5%, hsla(0, 0%, 100%, 0.41394) 74.1%, hsla(0, 0%, 100%, 0.3238) 78.4%, hsla(0, 0%, 100%, 0.23172) 82.6%, hsla(0, 0%, 100%, 0.1409) 86.9%, hsla(0, 0%, 100%, 0.0541) 92%, hsla(0, 0%, 100%, 0))'
-          }}
-        />
-      )}
-
-      {/* Desktop fade effect - only visible when white background and hideGradient is false */}
-      {isWhiteBg && !hideGradient && (
-        <div
-          className="hidden lg:block absolute left-0 right-0 h-24 -bottom-24"
-          style={{
-            backgroundImage: 'linear-gradient(hsl(0, 0%, 100%), hsla(0, 0%, 100%, 0.98759) 9.9%, hsla(0, 0%, 100%, 0.96314) 19.5%, hsla(0, 0%, 100%, 0.926) 28.7%, hsla(0, 0%, 100%, 0.87667) 37.3%, hsla(0, 0%, 100%, 0.81624) 45.2%, hsla(0, 0%, 100%, 0.74699) 52.3%, hsla(0, 0%, 100%, 0.66999) 58.7%, hsla(0, 0%, 100%, 0.58775) 64.4%, hsla(0, 0%, 100%, 0.50184) 69.5%, hsla(0, 0%, 100%, 0.41394) 74.1%, hsla(0, 0%, 100%, 0.3238) 78.4%, hsla(0, 0%, 100%, 0.23172) 82.6%, hsla(0, 0%, 100%, 0.1409) 86.9%, hsla(0, 0%, 100%, 0.0541) 92%, hsla(0, 0%, 100%, 0))'
-          }}
-        />
-      )}
-    </header>
+    </>
   );
 }

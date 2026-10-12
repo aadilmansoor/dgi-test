@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
@@ -83,137 +83,75 @@ const pillars = [
 // ── Scroll Stages Section ─────────────────────────────────────────────────────
 function ScrollStagesSection() {
   const containerRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const imageRefs    = useRef([]);
   const titleRefs    = useRef([]);
   const descRefs     = useRef([]);
-  const prevIndexRef = useRef(0);
 
   useLayoutEffect(() => {
-    scrollStages.forEach((_, i) => {
-      if (imageRefs.current[i]) {
+    const ctx = gsap.context(() => {
+      // Base state: stage 0 showing, the rest clipped away above it.
+      // z-index follows the stage order, so a stage always wipes in over the one
+      // before it — and un-wipes cleanly when the scrub runs backwards.
+      scrollStages.forEach((_, i) => {
         gsap.set(imageRefs.current[i], {
           clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
-          zIndex: i === 0 ? 1 : 0,
+          zIndex:   i,
         });
-      }
-      if (titleRefs.current[i]) {
-        gsap.set(titleRefs.current[i], {
-          opacity: i === 0 ? 1 : 0,
-          y: i === 0 ? 0 : 20,
-          display: i === 0 ? "block" : "none",
-        });
-      }
-      if (descRefs.current[i]) {
-        gsap.set(descRefs.current[i], {
-          opacity: i === 0 ? 1 : 0,
-          y: i === 0 ? 0 : 15,
-          xPercent: -50,
-          display: i === 0 ? "block" : "none",
-        });
-      }
-    });
-
-    const ctx = gsap.context(() => {
-      const vh = window.innerHeight;
-      scrollStages.forEach((_, i) => {
-        ScrollTrigger.create({
-          trigger: containerRef.current,
-          start: () => `top+=${i * vh} top`,
-          end:   () => `top+=${(i + 1) * vh} top`,
-          onEnter:     () => setActiveIndex(i),
-          onEnterBack: () => setActiveIndex(i),
-        });
+        gsap.set(titleRefs.current[i], { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 20 });
+        gsap.set(descRefs.current[i],  { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 15, xPercent: -50 });
       });
-    });
+
+      // One scrubbed timeline drives every stage, so the slides are a function of
+      // scroll position instead of playing on their own clock — scroll fast and the
+      // wipe simply moves fast; nothing queues up and no stage can be skipped.
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start:   "top top",
+          end:     "bottom bottom",   // = the sticky panel's full travel
+          scrub:   true,
+        },
+      });
+
+      // 1 unit of timeline time == 1 viewport of scroll, so the stage boundaries
+      // land exactly where they did before: stage k owns scroll [k, k+1) viewports,
+      // sitting still for the first HOLD of it and wiping to stage k+1 over the rest.
+      const HOLD = 0.4;
+      const WIPE = 1 - HOLD;
+
+      scrollStages.slice(0, -1).forEach((_, k) => {
+        const at = k + HOLD;
+
+        tl.fromTo(imageRefs.current[k + 1],
+          { clipPath: "inset(100% 0% 0% 0%)" },
+          { clipPath: "inset(0% 0% 0% 0%)", duration: WIPE },
+          at
+        );
+
+        // Text crosses over inside the wipe: outgoing leaves first, incoming
+        // arrives on the back half.
+        tl.to(titleRefs.current[k], { autoAlpha: 0, y: -20, duration: WIPE * 0.45 }, at);
+        tl.to(descRefs.current[k],  { autoAlpha: 0, y: -15, duration: WIPE * 0.45 }, at);
+
+        tl.fromTo(titleRefs.current[k + 1],
+          { autoAlpha: 0, y: 20 },
+          { autoAlpha: 1, y: 0, duration: WIPE * 0.5 },
+          at + WIPE * 0.5
+        );
+        tl.fromTo(descRefs.current[k + 1],
+          { autoAlpha: 0, y: 15 },
+          { autoAlpha: 1, y: 0, duration: WIPE * 0.5 },
+          at + WIPE * 0.5
+        );
+      });
+
+      // Hold the last stage for its own viewport of scroll.
+      tl.to({}, { duration: 1 });
+    }, containerRef);
+
     return () => ctx.revert();
   }, []);
-
-  useLayoutEffect(() => {
-    const prev = prevIndexRef.current;
-    const curr = activeIndex;
-    if (prev === curr) return;
-
-    // Kill any active tweens on the slide nodes to prevent conflicting animations on rapid scroll
-    scrollStages.forEach((_, idx) => {
-      if (imageRefs.current[idx]) gsap.killTweensOf(imageRefs.current[idx]);
-      if (titleRefs.current[idx]) gsap.killTweensOf(titleRefs.current[idx]);
-      if (descRefs.current[idx]) gsap.killTweensOf(descRefs.current[idx]);
-    });
-
-    // Proactively force-hide all other slides that are NOT part of the current active/previous cross-fade
-    scrollStages.forEach((_, idx) => {
-      if (idx !== curr && idx !== prev) {
-        if (titleRefs.current[idx]) gsap.set(titleRefs.current[idx], { opacity: 0, display: "none" });
-        if (descRefs.current[idx]) gsap.set(descRefs.current[idx], { opacity: 0, display: "none" });
-      }
-    });
-
-    // Image clip animation
-    const fromClip = curr > prev ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)";
-    gsap.set(imageRefs.current[curr], { zIndex: 2 });
-    gsap.set(imageRefs.current[prev], { zIndex: 1 });
-    gsap.fromTo(imageRefs.current[curr],
-      { clipPath: fromClip },
-      { 
-        clipPath: "inset(0% 0% 0% 0%)", 
-        duration: 1.8, 
-        ease: "power2.inOut",
-        onComplete: () => {
-          // Clean up and reset all non-active slides to fully clipped state and base z-index
-          scrollStages.forEach((_, idx) => {
-            if (idx !== curr && imageRefs.current[idx]) {
-              gsap.set(imageRefs.current[idx], {
-                clipPath: "inset(100% 0% 0% 0%)",
-                zIndex: 0
-              });
-            }
-          });
-          // Lock current slide in at zIndex 1
-          if (imageRefs.current[curr]) {
-            gsap.set(imageRefs.current[curr], { zIndex: 1 });
-          }
-        }
-      }
-    );
-
-    // Synchronized Title GSAP Transition (sequential display-none to prevent overlapping)
-    gsap.to(titleRefs.current[prev], {
-      opacity: 0,
-      y: curr > prev ? -20 : 20,
-      duration: 0.45,
-      ease: "power2.inOut",
-      onComplete: () => {
-        gsap.set(titleRefs.current[prev], { display: "none" });
-      }
-    });
-
-    gsap.set(titleRefs.current[curr], { display: "block" });
-    gsap.fromTo(titleRefs.current[curr],
-      { opacity: 0, y: curr > prev ? 20 : -20 },
-      { opacity: 1, y: 0, duration: 1.0, ease: "power2.out", delay: 0.35 }
-    );
-
-    // Synchronized Description GSAP Transition (sequential display-none to prevent overlapping)
-    gsap.to(descRefs.current[prev], {
-      opacity: 0,
-      y: curr > prev ? -15 : 15,
-      xPercent: -50,
-      duration: 0.45,
-      ease: "power2.inOut",
-      onComplete: () => {
-        gsap.set(descRefs.current[prev], { display: "none" });
-      }
-    });
-
-    gsap.set(descRefs.current[curr], { display: "block" });
-    gsap.fromTo(descRefs.current[curr],
-      { opacity: 0, y: curr > prev ? 15 : -15, xPercent: -50 },
-      { opacity: 1, y: 0, xPercent: -50, duration: 1.0, ease: "power2.out", delay: 0.5 }
-    );
-
-    prevIndexRef.current = curr;
-  }, [activeIndex]);
 
   return (
     <div ref={containerRef} style={{ height: `${(scrollStages.length + 1) * 100}vh` }} className="relative">

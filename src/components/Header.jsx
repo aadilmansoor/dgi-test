@@ -10,23 +10,12 @@ const mainNavLinks = [
   { href: "/works", label: "Portfolio" },
 ];
 
-const designDropdown = {
-  label: "Design and Build",
-  links: [
-    { href: "/design", label: "Design" },
-    { href: "/build", label: "Build" },
-  ],
-};
-
-export default function Header({ isDark = false, isWhiteBg = false, hideGradient = false, hideLogo = false, hideOnScrollDown = false }) {
+export default function Header({ isDark = false, isWhiteBg = false, hideLogo = false, hideOnScrollDown = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileDesignOpen, setIsMobileDesignOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [isNavHidden, setIsNavHidden] = useState(false);
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
   const pathname = usePathname();
-  const dropdownTimeoutRef = useRef(null);
   const lastScrollYRef = useRef(0);
 
   // Intersection Observer for section detection on about page
@@ -43,6 +32,8 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setActiveSection(entry.target.id);
+        } else {
+          setActiveSection((current) => (current === entry.target.id ? "" : current));
         }
       });
     };
@@ -110,8 +101,6 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
     return false;
   };
 
-  const isDropdownActive = designDropdown.links.some((l) => isLinkActive(l.href));
-
   const effectiveDark = isDark || (hideOnScrollDown && isScrolledPastHero);
 
   const getTextColor = (href) => {
@@ -121,26 +110,11 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
     return effectiveDark ? "text-black" : "text-white";
   };
 
-  const getDropdownTriggerColor = () => {
-    if (isMenuOpen) return "text-black";
-    if (isDropdownActive) return effectiveDark ? "text-decograph-red" : "text-white";
-    return effectiveDark ? "text-black" : "text-white";
-  };
-
   const logoSrc = (isWhiteBg || isMenuOpen || (hideOnScrollDown && isScrolledPastHero)) ? "/images/logo-red.png" : "/images/logo.png";
   const desktopBgClass = isWhiteBg ? "lg:bg-white" : "lg:bg-transparent";
   const headerBg = (hideOnScrollDown && isScrolledPastHero)
     ? "bg-white shadow-sm"
     : `bg-white ${desktopBgClass}`;
-
-  const handleDropdownEnter = () => {
-    clearTimeout(dropdownTimeoutRef.current);
-    setIsDropdownOpen(true);
-  };
-
-  const handleDropdownLeave = () => {
-    dropdownTimeoutRef.current = setTimeout(() => setIsDropdownOpen(false), 150);
-  };
 
   return (
     <>
@@ -183,44 +157,6 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
               </li>
             ))}
 
-            {/* Design and Build Dropdown */}
-            <li
-              className="relative"
-              onMouseEnter={handleDropdownEnter}
-              onMouseLeave={handleDropdownLeave}
-            >
-              <button
-                className={`px-3 py-1.5 text-sm font-normal flex items-center gap-1 transition-colors duration-300 ${getDropdownTriggerColor()} ${isDark ? "hover:text-decograph-red" : "hover:text-black"} ${isDropdownActive ? "border border-current rounded-full" : ""}`}
-              >
-                {designDropdown.label}
-                <svg
-                  className={`w-3 h-3 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div
-                  className="absolute top-full left-0 mt-0 bg-white shadow-lg min-w-[180px] py-2 z-50"
-                  onMouseEnter={handleDropdownEnter}
-                  onMouseLeave={handleDropdownLeave}
-                >
-                  {designDropdown.links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`block px-4 py-2.5 text-sm hover:text-decograph-red hover:bg-gray-50 transition-colors ${isLinkActive(link.href) ? "text-decograph-red" : "text-gray-800"}`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </li>
-
             {/* Clientele */}
             <li>
               <Link
@@ -254,25 +190,6 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
         </nav>
       </div>
 
-      {/* Mobile Gradient - Always Visible (Hidden when menu is open or hideGradient is true) */}
-      {!isMenuOpen && !hideGradient && (
-        <div
-          className="lg:hidden absolute left-0 right-0 h-16 top-full -mt-px"
-          style={{
-            backgroundImage: 'linear-gradient(hsl(0, 0%, 100%), hsla(0, 0%, 100%, 0.98759) 9.9%, hsla(0, 0%, 100%, 0.96314) 19.5%, hsla(0, 0%, 100%, 0.926) 28.7%, hsla(0, 0%, 100%, 0.87667) 37.3%, hsla(0, 0%, 100%, 0.81624) 45.2%, hsla(0, 0%, 100%, 0.74699) 52.3%, hsla(0, 0%, 100%, 0.66999) 58.7%, hsla(0, 0%, 100%, 0.58775) 64.4%, hsla(0, 0%, 100%, 0.50184) 69.5%, hsla(0, 0%, 100%, 0.41394) 74.1%, hsla(0, 0%, 100%, 0.3238) 78.4%, hsla(0, 0%, 100%, 0.23172) 82.6%, hsla(0, 0%, 100%, 0.1409) 86.9%, hsla(0, 0%, 100%, 0.0541) 92%, hsla(0, 0%, 100%, 0))'
-          }}
-        />
-      )}
-
-      {/* Desktop fade effect - only visible when white background and hideGradient is false */}
-      {isWhiteBg && !hideGradient && (
-        <div
-          className="hidden lg:block absolute left-0 right-0 h-24 -bottom-24"
-          style={{
-            backgroundImage: 'linear-gradient(hsl(0, 0%, 100%), hsla(0, 0%, 100%, 0.98759) 9.9%, hsla(0, 0%, 100%, 0.96314) 19.5%, hsla(0, 0%, 100%, 0.926) 28.7%, hsla(0, 0%, 100%, 0.87667) 37.3%, hsla(0, 0%, 100%, 0.81624) 45.2%, hsla(0, 0%, 100%, 0.74699) 52.3%, hsla(0, 0%, 100%, 0.66999) 58.7%, hsla(0, 0%, 100%, 0.58775) 64.4%, hsla(0, 0%, 100%, 0.50184) 69.5%, hsla(0, 0%, 100%, 0.41394) 74.1%, hsla(0, 0%, 100%, 0.3238) 78.4%, hsla(0, 0%, 100%, 0.23172) 82.6%, hsla(0, 0%, 100%, 0.1409) 86.9%, hsla(0, 0%, 100%, 0.0541) 92%, hsla(0, 0%, 100%, 0))'
-          }}
-        />
-      )}
     </header>
 
       {/* Mobile Full Screen Menu */}
@@ -294,37 +211,6 @@ export default function Header({ isDark = false, isWhiteBg = false, hideGradient
               </li>
             );
           })}
-
-          {/* Design and Build expandable on mobile */}
-          <li className="w-full text-left">
-            <button
-              onClick={() => setIsMobileDesignOpen(!isMobileDesignOpen)}
-              className={`text-5xl font-normal ${isDropdownActive ? "text-decograph-red" : "text-black"} hover:text-decograph-red transition-colors uppercase leading-[0.95] flex items-center gap-3 w-full`}
-            >
-              Design &amp; Build
-              <svg
-                className={`w-6 h-6 transition-transform duration-300 ${isMobileDesignOpen ? "rotate-180" : ""}`}
-                fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            <div className={`overflow-hidden transition-all duration-300 ${isMobileDesignOpen ? "max-h-40 mt-2" : "max-h-0"}`}>
-              <ul className="pl-4 space-y-2">
-                {designDropdown.links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`text-2xl font-normal ${isLinkActive(link.href) ? "text-decograph-red" : "text-gray-500"} hover:text-decograph-red transition-colors uppercase block`}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
 
           {/* Clientele */}
           <li className="w-full text-left">

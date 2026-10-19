@@ -1,47 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import AboutHeroSection from "@/components/AboutHeroSection";
+import TrustStrip from "@/components/TrustStrip";
+import VisionMissionSection from "@/components/VisionMissionSection";
+import TeamSection from "@/components/TeamSection";
 import ServicesSection from "@/components/ServicesSection";
-import WhyDecographSection from "@/components/WhyDecographSection";
+import HowWeWorkSection from "@/components/HowWeWorkSection";
 import PortfolioPreviewSection from "@/components/PortfolioPreviewSection";
 import ClienteleSection from "@/components/ClienteleSection";
+import ContactCtaSection from "@/components/ContactCtaSection";
 import Footer from "@/components/Footer";
 
+// After the hero, sections follow the company profile's order.
 export default function AboutPage() {
-  const [hasScrolled, setHasScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setHasScrolled(window.scrollY > 0);
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-white pt-14 md:pt-16">
-      {/* Header */}
-      <Header isWhiteBg={true} isDark={true} hideGradient={!hasScrolled} />
+    <div className="min-h-screen bg-white">
+      <Header isWhiteBg={false} isDark={false} hideOnScrollDown={true} />
 
-      {/* About Hero Section */}
       <AboutHeroSection />
-
-      {/* Services Section */}
+      <VisionMissionSection />
+      <TrustStrip showTagline />
+      <TeamSection />
       <ServicesSection />
-
-      {/* Why Decograph Section */}
-      <WhyDecographSection />
-
-      {/* Portfolio Preview Section */}
+      <HowWeWorkSection />
       <PortfolioPreviewSection />
-
-      {/* Clientele Section */}
       <ClienteleSection />
+      <ContactCtaSection />
 
-      {/* Footer */}
       <Footer />
     </div>
   );

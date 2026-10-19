@@ -135,6 +135,8 @@
 /* Decograph Custom Colors */
 @theme inline {
   --color-decograph-red: #721b24;
+  /* Lighter brand red for text and icons on dark backgrounds (5.4:1 on the footer) */
+  --color-decograph-red-light: #d65c68;
   --font-serif: "Georgia", "Times New Roman", serif;
   --font-deuterium: "Deuterium Variable", sans-serif;
   --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;

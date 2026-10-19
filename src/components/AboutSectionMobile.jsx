@@ -38,7 +38,7 @@ export default function AboutSectionMobile() {
   return (
     <section className="py-20 px-6 bg-decograph-red text-center">
       <div className="max-w-md mx-auto">
-        <p ref={textRef} className="font-serif text-lg leading-relaxed text-white">
+        <p ref={textRef} className="century-gothic text-lg leading-relaxed text-white">
             {/* Render text directly or with split if we want simple animation */}
              <span className="block mb-4">{splitText(text1)}</span>
              <span>{splitText(text2)}</span>

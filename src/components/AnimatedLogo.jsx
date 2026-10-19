@@ -76,9 +76,15 @@ export default function AnimatedLogo({ onDockedChange }) {
 
       // Hand-off to the static navbar logo. flushSync commits it in this same
       // frame, so the two logos never both disappear (or both show) for a frame.
+      // It runs in a microtask because render can be called inside React's own
+      // effect (ScrollTrigger updates on creation when the page loads scrolled),
+      // where flushSync is not allowed; microtasks still run before the paint.
       if (docked !== dockedRef.current) {
         dockedRef.current = docked;
-        flushSync(() => onDockedChangeRef.current?.(docked));
+        queueMicrotask(() => {
+          if (dockedRef.current !== docked) return; // superseded, or unmounted
+          flushSync(() => onDockedChangeRef.current?.(docked));
+        });
       }
     };
 

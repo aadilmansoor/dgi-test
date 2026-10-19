@@ -1,7 +1,7 @@
 "use client";
 
 
-import { useState, useEffect, use } from "react";
+import { useState, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
@@ -9,22 +9,14 @@ import Footer from "@/components/Footer";
 import SubscribeModal from "@/components/SubscribeModal";
 import PortalPopup from "@/components/PortalPopup";
 import { useProject } from "@/hooks/useProject";
+import { categoryHref } from "@/lib/categories";
 
 export default function WorkDetailPage({ params }) {
   const { slug } = use(params);  
   const { data: project, isLoading } = useProject(slug || "");
   const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
   const [isMoreInfoOpen, setIsMoreInfoOpen] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setHasScrolled(window.scrollY > 0);
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   if (isLoading) {
     return (
@@ -50,24 +42,25 @@ export default function WorkDetailPage({ params }) {
 
   // Sort gallery by order if available
   const galleryImages = project.gallery?.sort((a, b) => (a.order || 0) - (b.order || 0)) || [];
+  const categoryName = project.category || "Interior Design";
 
   return (
     <div className="min-h-screen bg-white pt-14 md:pt-16">
       {/* Header */}
-      <Header isWhiteBg={true} isDark={true} hideGradient={!hasScrolled} />
+      <Header isWhiteBg={true} isDark={true} />
 
       {/* Content */}
       <main className="max-w-[1280px] mx-auto px-4 lg:px-12 py-12">
         {/* Navigation Bar */}
         <div className="flex items-center justify-between py-4 border-b border-gray-900">
           <Link
-            href="/works"
+            href={categoryHref(categoryName)}
             className="flex items-center gap-2 text-gray-900 hover:text-decograph-red transition-colors"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            <span style={{ fontFamily: 'Deuterium Variable, sans-serif', fontWeight: 400, fontSize: '20px' }}>Our Work</span>
+            <span style={{ fontFamily: 'Deuterium Variable, sans-serif', fontWeight: 400, fontSize: '20px' }}>{categoryName}</span>
           </Link>
           <button 
             onClick={() => setIsMoreInfoOpen(!isMoreInfoOpen)}
@@ -104,10 +97,13 @@ export default function WorkDetailPage({ params }) {
 
         <div className="mb-12 mt-12">
           <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-            <span className="bg-gray-100 px-3 py-1 rounded-full">
-              {project.category || "Interior Design"}
-            </span>
-            <span>{project.year || "2025"}</span>
+            <Link
+              href={categoryHref(categoryName)}
+              className="bg-gray-100 px-3 py-1 rounded-full hover:text-decograph-red transition-colors"
+            >
+              {categoryName}
+            </Link>
+            {project.year && <span>{project.year}</span>}
             {project.client && (
               <>
                 <span>•</span>

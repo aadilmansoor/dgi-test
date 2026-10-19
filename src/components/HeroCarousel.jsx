@@ -97,7 +97,8 @@ const CarouselRow = ({ rowIndex, isPaused, setIsPaused }) => {
   );
 };
 
-export default function HeroCarousel() {
+// `fixed` pins the hero behind the page (desktop); otherwise it sits in the page flow (mobile).
+export default function HeroCarousel({ fixed = true }) {
   const [isPaused, setIsPaused] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRef = useRef(null);
@@ -116,7 +117,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section className="fixed inset-0 h-screen bg-black overflow-hidden z-0">
+    <section className={`${fixed ? "fixed inset-0 h-screen z-0" : "relative h-full"} bg-black overflow-hidden`}>
       {/* Background Video — cycles through all 11 clips */}
       <video
         ref={videoRef}

@@ -29,17 +29,44 @@ export default function OurProcessSection() {
         },
       });
 
-      // ── Images: start as thin strip in centre, split outward once on enter ─
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 65%",
-          toggleActions: "play none none none",
-        },
+      // The image reveals start from an IntersectionObserver, not ScrollTrigger:
+      // sections above load after this one is set up, which leaves
+      // ScrollTrigger's start points stale (and a refresh here would snap
+      // AnimatedLogo, see page.js).
+      const mm = gsap.matchMedia();
+
+      // ── Desktop: open outward from the centre line once on enter ─
+      mm.add("(min-width: 768px)", () => {
+        const tl = gsap.timeline({ paused: true });
+        tl.from(leftRef.current,  { clipPath: "inset(0 0% 0 100%)", duration: 2.4, ease: "power3.out" })
+          .from(rightRef.current, { clipPath: "inset(0 100% 0 0%)", duration: 2.4, ease: "power3.out" }, "<");
+
+        const observer = new IntersectionObserver(([entry]) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          tl.play();
+        }, { rootMargin: "0px 0px -35% 0px" });
+
+        observer.observe(leftRef.current.parentElement);
+        return () => observer.disconnect();
       });
 
-      tl.from(leftRef.current,  { clipPath: "inset(0 0% 0 98%)", duration: 2.4, ease: "power3.out" })
-        .from(rightRef.current, { clipPath: "inset(0 98% 0 0%)", duration: 2.4, ease: "power3.out" }, "<");
+      // ── Phones: panels are stacked, so each opens downward as it enters ─
+      mm.add("(max-width: 767px)", () => {
+        const panels = [leftRef.current, rightRef.current];
+        gsap.set(panels, { clipPath: "inset(0 0 100% 0)" });
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            gsap.to(entry.target, { clipPath: "inset(0 0 0% 0)", duration: 1.6, ease: "power3.out" });
+          });
+        }, { rootMargin: "0px 0px -20% 0px" });
+
+        panels.forEach((panel) => observer.observe(panel));
+        return () => observer.disconnect();
+      });
 
     }, sectionRef);
 
@@ -87,20 +114,20 @@ export default function OurProcessSection() {
         </p>
       </div>
 
-      {/* ── Two images — split animation ──────────────────────────── */}
-      <div className="flex h-[55vh] md:h-[70vh] overflow-hidden">
+      {/* ── Two images: side by side on desktop, stacked on phones ─── */}
+      <div className="flex flex-col md:flex-row md:h-[70vh] overflow-hidden">
 
         {/* Left — Design */}
         <Link
-          href="/design"
+          href="/about#process"
           ref={leftRef}
-          className="relative flex-1 overflow-hidden group cursor-pointer"
+          className="relative h-[45vh] md:h-auto md:flex-1 overflow-hidden group cursor-default"
         >
           <Image
             src="/images/hero/hero-2.webp"
             alt="Design"
             fill
-            sizes="50vw"
+            sizes="(max-width: 767px) 100vw, 50vw"
             quality={90}
             className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
           />
@@ -130,15 +157,15 @@ export default function OurProcessSection() {
 
         {/* Right — Build */}
         <Link
-          href="/build"
+          href="/about#process"
           ref={rightRef}
-          className="relative flex-1 overflow-hidden group cursor-pointer"
+          className="relative h-[45vh] md:h-auto md:flex-1 overflow-hidden group cursor-default"
         >
           <Image
             src="/images/hero/hero-5.webp"
             alt="Build"
             fill
-            sizes="50vw"
+            sizes="(max-width: 767px) 100vw, 50vw"
             quality={90}
             className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
           />

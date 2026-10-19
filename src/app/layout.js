@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +22,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.decographinteriors.com"),
+  metadataBase: new URL(SITE_URL),
   title: "Decograph Interiors | Interior Design & Fit-Out Studio",
   description:
     "Decograph Interior Design Studio is a full-service interior design and fit-out company specializing in residential, commercial, retail, and hospitality spaces.",
@@ -37,7 +38,7 @@ export const metadata = {
     title: "Decograph Interiors | Interior Design & Fit-Out Studio",
     description:
       "Decograph Interior Design Studio is a full-service interior design and fit-out company specializing in residential, commercial, retail, and hospitality spaces.",
-    url: "https://www.decographinteriors.com",
+    url: SITE_URL,
     siteName: "Decograph Interiors",
     images: [
       {
@@ -60,7 +61,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth overscroll-none">
+    // data-scroll-behavior lets Next.js switch smooth scrolling off while it
+    // resets scroll on route changes, so new pages open at the top.
+    <html lang="en" className="scroll-smooth overscroll-none" data-scroll-behavior="smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} antialiased overscroll-none`}
       >

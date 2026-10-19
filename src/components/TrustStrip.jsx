@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 const stats = [
-  { value: 200, suffix: "+", label: "Projects Completed" },
-  { value: 50000, suffix: "+", label: "Square Meters Designed", display: "50,000+" },
-  { value: 30, suffix: "+", label: "Designer Projects" },
+  { value: 28, suffix: "+", label: "Engineers & Interior Designers" },
+  { value: 105, suffix: "+", label: "Skilled Craftsmen" },
 ];
 
 function CountUp({ target, suffix, display, inView }) {
@@ -36,7 +35,8 @@ function CountUp({ target, suffix, display, inView }) {
   return <span>{inView ? count.toLocaleString() + suffix : "0" + suffix}</span>;
 }
 
-export default function TrustStrip() {
+// `showTagline` adds the company profile's strapline above the figures (We Are page).
+export default function TrustStrip({ showTagline = false }) {
   const sectionRef = useRef(null);
   const [inView, setInView] = useState(false);
 
@@ -52,7 +52,14 @@ export default function TrustStrip() {
   return (
     <section ref={sectionRef} className="bg-decograph-red py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0 text-white">
+        {showTagline && (
+          <div className="text-center text-white mb-14">
+            <p className="text-xs md:text-sm uppercase tracking-[0.45em] text-white/70 mb-3">Transforming</p>
+            <h2 className="century-gothic text-3xl md:text-5xl font-bold tracking-wide mb-3">Visions into Reality</h2>
+            <p className="text-xs md:text-sm uppercase tracking-widest text-white/70">Elevate your lifestyle by redefining your space</p>
+          </div>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-0 text-white">
           {stats.map((stat, i) => (
             <div
               key={i}

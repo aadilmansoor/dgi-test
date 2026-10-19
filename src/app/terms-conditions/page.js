@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SubscribeModal from "@/components/SubscribeModal";
@@ -8,25 +8,14 @@ import PortalPopup from "@/components/PortalPopup";
 
 export default function TermsConditionsPage() {
   const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setHasScrolled(window.scrollY > 0);
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <div className="min-h-screen bg-white pt-20">
       {/* Header */}
       <Header 
         isWhiteBg={true} 
-        isDark={true} 
-        hideGradient={!hasScrolled} 
-        onSubscribeClick={() => setIsSubscribeOpen(true)}
+        isDark={true} onSubscribeClick={() => setIsSubscribeOpen(true)}
       />
 
       {/* Content */}

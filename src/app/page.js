@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
@@ -26,6 +27,8 @@ export default function Home() {
   const [isNavDark, setIsNavDark] = useState(false);
   const [isNavWhiteBg, setIsNavWhiteBg] = useState(false);
   const [isLogoRed, setIsLogoRed] = useState(false);
+  // null until measured, so neither hero video loads on the wrong screen size
+  const [isDesktop, setIsDesktop] = useState(null);
   const whiteGradientRef = useRef(null);
   const portfolioRef = useRef(null);
 
@@ -121,6 +124,14 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
   const openSubscribe = () => setSubscribeOpen(true);
   const closeSubscribe = () => setSubscribeOpen(false);
 
@@ -132,7 +143,7 @@ export default function Home() {
 
         {/* Hero Section with Carousel (Fixed) - Desktop Only */}
         <div className="hidden lg:block">
-          <HeroCarousel />
+          {isDesktop && <HeroCarousel />}
         </div>
         
         {/* Animated Logo Overlay - Desktop Only */}
@@ -164,8 +175,19 @@ export default function Home() {
             }}
           />
 
+          {/* Mobile: same hero and about sections as desktop, without the pinned scroll animations */}
+          <div className="lg:hidden pt-20">
+            <div className="relative h-[calc(100svh-5rem)]">
+              {isDesktop === false && <HeroCarousel fixed={false} />}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <Image src="/images/logo.png" alt="Decograph Interiors" width={1934} height={663} priority className="w-3/5 max-w-[280px] h-auto" />
+              </div>
+            </div>
+            <AboutSectionMobile />
+          </div>
+
           {/* Part 4: Portfolio Gallery (white background) - scrolls over About */}
-          <div ref={portfolioRef} className="relative z-10 pt-20 lg:pt-0">
+          <div ref={portfolioRef} className="relative z-10">
             {/* Projects carousel */}
             <PortfolioGrid />
 

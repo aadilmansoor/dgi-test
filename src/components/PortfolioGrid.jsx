@@ -2,74 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { useProjects } from "@/hooks/useProjects";
-import { shimmer, toBase64 } from "@/lib/shimmer";
+import CategoryTile from "@/components/CategoryTile";
+import { useWorkCategories } from "@/hooks/useWorkCategories";
 
-const BuildingIcon = () => (
-  <svg width="36" height="39" viewBox="0 0 36 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M34.5756 37.7704H32.3486V30.968C32.3486 30.6525 32.0912 30.3961 31.7744 30.3961H28.419V12.5069C28.419 5.61009 22.785 0 15.8609 0H7.30502C6.98824 0 6.7308 0.256391 6.7308 0.571875V30.3971H3.37545C3.05867 30.3971 2.80123 30.6535 2.80123 30.9689V37.7714H0.574219C0.257441 37.7714 0 38.0278 0 38.3433C0 38.6587 0.257441 38.9151 0.574219 38.9151H34.5756C34.8924 38.9151 35.1498 38.6587 35.1498 38.3433C35.1498 38.0278 34.8924 37.7714 34.5756 37.7714V37.7704Z" fill="white" />
-  </svg>
-);
-
-const PortfolioItem = ({ coverImage, slug, title, category, isRevealed, onReveal }) => {
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  const handleTouch = () => {
-    if (!isRevealed) onReveal();
-  };
-
-  const handleClick = (e) => {
-    if (window.innerWidth < 768) {
-      if (!isRevealed && !isNavigating) {
-        e.preventDefault();
-        onReveal();
-        setIsNavigating(true);
-        setTimeout(() => { window.location.href = `/works/${slug || "#"}`; }, 300);
-      }
-    }
-  };
-
-  return (
-    <Link
-      href={`/works/${slug || "#"}`}
-      className="relative overflow-hidden group cursor-pointer block h-full w-full"
-      onTouchStart={handleTouch}
-      onClick={handleClick}
-    >
-      {coverImage && (
-        <Image
-          src={coverImage}
-          alt={title || "Project"}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          placeholder="blur"
-          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          priority={false}
-        />
-      )}
-      {/* Desktop: CSS hover */}
-      <div className="hidden md:flex absolute inset-0 bg-decograph-red opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center text-white pointer-events-none">
-        <BuildingIcon />
-        <span className="portfolio-title1 mt-4">{category || "Category"}</span>
-        <span className="portfolio-title2 mt-1">{title || "Project Name"}</span>
-      </div>
-      {/* Mobile: State-based reveal */}
-      <div className={`md:hidden absolute inset-0 bg-decograph-red transition-opacity duration-300 flex flex-col items-center justify-center text-white pointer-events-none ${isRevealed ? "opacity-100" : "opacity-0"}`}>
-        <BuildingIcon />
-        <span className="portfolio-title1 mt-4">{category || "Category"}</span>
-        <span className="portfolio-title2 mt-1">{title || "Project Name"}</span>
-      </div>
-    </Link>
-  );
-};
-
+// Home page carousel of work categories; each tile opens that category's works.
 export default function PortfolioGrid() {
-  const { data: projects = [], isLoading } = useProjects();
+  const { data: categories, isLoading } = useWorkCategories();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(3);
-  const [revealedIndex, setRevealedIndex] = useState(null);
   const touchStartX = useRef(null);
 
   useEffect(() => {
@@ -84,7 +24,7 @@ export default function PortfolioGrid() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const maxIndex = Math.max(0, projects.length - slidesPerView);
+  const maxIndex = Math.max(0, categories.length - slidesPerView);
 
   const goNext = () => setCurrentIndex((i) => Math.min(i + 1, maxIndex));
   const goPrev = () => setCurrentIndex((i) => Math.max(i - 1, 0));
@@ -118,7 +58,7 @@ export default function PortfolioGrid() {
     );
   }
 
-  if (projects.length === 0) {
+  if (categories.length === 0) {
     return (
       <section className="py-12 md:py-16 px-6 lg:px-20 bg-white">
         <div className="max-w-[1400px] mx-auto flex items-center justify-center h-64">
@@ -128,7 +68,7 @@ export default function PortfolioGrid() {
     );
   }
 
-  const progressPercent = Math.min(((currentIndex + slidesPerView) / projects.length) * 100, 100);
+  const progressPercent = Math.min(((currentIndex + slidesPerView) / categories.length) * 100, 100);
 
   return (
     <section className="relative py-12 md:py-16 px-6 lg:px-20 bg-white overflow-hidden">
@@ -138,7 +78,7 @@ export default function PortfolioGrid() {
           <h2 className="about-heading text-gray-900">Our Projects</h2>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-400 hidden sm:block">
-              {Math.min(currentIndex + slidesPerView, projects.length)} / {projects.length}
+              {Math.min(currentIndex + slidesPerView, categories.length)} / {categories.length}
             </span>
             <button
               onClick={goPrev}
@@ -173,19 +113,13 @@ export default function PortfolioGrid() {
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentIndex * (100 / slidesPerView)}%)` }}
           >
-            {projects.map((project, idx) => (
+            {categories.map((category) => (
               <div
-                key={idx}
+                key={category.slug}
                 className="flex-shrink-0 px-1.5"
                 style={{ width: `${100 / slidesPerView}%` }}
               >
-                <div className="relative aspect-[4/3]">
-                  <PortfolioItem
-                    {...project}
-                    isRevealed={revealedIndex === idx}
-                    onReveal={() => setRevealedIndex(idx)}
-                  />
-                </div>
+                <CategoryTile {...category} />
               </div>
             ))}
           </div>

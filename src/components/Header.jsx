@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { handleAboutLinkClick } from "@/lib/aboutNav";
 
 const mainNavLinks = [
   { href: "/about", label: "We Are" },
@@ -150,6 +151,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
               <li key={link.href}>
                 <Link
                   href={link.href}
+                  onClick={link.href === "/about" ? (e) => handleAboutLinkClick(e, pathname) : undefined}
                   className={`px-3 py-1.5 text-sm font-normal transition-colors duration-300 ${getTextColor(link.href)} ${isDark ? "hover:text-decograph-red" : "hover:text-black"} ${isLinkActive(link.href) ? "border border-current rounded-full" : ""}`}
                 >
                   {link.label}
@@ -203,7 +205,10 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
               <li key={link.href} className="w-full text-left">
                 <Link
                   href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={(e) => {
+                    setIsMenuOpen(false);
+                    if (link.href === "/about") handleAboutLinkClick(e, pathname);
+                  }}
                   className={`text-5xl font-normal ${isActive ? "text-decograph-red" : "text-black"} hover:text-decograph-red transition-colors uppercase leading-[0.95] block w-full`}
                 >
                   {link.label}

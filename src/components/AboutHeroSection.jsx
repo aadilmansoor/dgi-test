@@ -3,6 +3,7 @@
 import { useRef, useLayoutEffect } from "react";
 import Image from "next/image";
 import gsap from "gsap";
+import { ABOUT_HERO_REPLAY } from "@/lib/aboutNav";
 
 // The Decograph mark itself (Group 36.png, 170 × 305) is the mask, so the
 // shape matches the logo exactly. The photo shows through the "d"; the tail
@@ -29,19 +30,28 @@ export default function AboutHeroSection() {
   const heroLineRef  = useRef(null);
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(heroImgRef.current, { scale: 1.1 }, { scale: 1, duration: 3.5, ease: "power2.out" });
-      gsap.from(heroTitleRef.current, {
-        clipPath: "inset(0 0 100% 0)", y: 32, duration: 1.5, ease: "power3.out", delay: 0.3,
+    let ctx;
+    const playIntro = () => {
+      ctx?.revert();
+      ctx = gsap.context(() => {
+        gsap.fromTo(heroImgRef.current, { scale: 1.1 }, { scale: 1, duration: 3.5, ease: "power2.out" });
+        gsap.from(heroTitleRef.current, {
+          clipPath: "inset(0 0 100% 0)", y: 32, duration: 1.5, ease: "power3.out", delay: 0.3,
+        });
+        gsap.from(heroSubRef.current, {
+          opacity: 0, y: 14, letterSpacing: "0.7em", duration: 1.2, ease: "power3.out", delay: 1.1,
+        });
+        gsap.from(heroLineRef.current, {
+          scaleX: 0, duration: 1.4, ease: "power3.inOut", delay: 1.5, transformOrigin: "center center",
+        });
       });
-      gsap.from(heroSubRef.current, {
-        opacity: 0, y: 14, letterSpacing: "0.7em", duration: 1.2, ease: "power3.out", delay: 1.1,
-      });
-      gsap.from(heroLineRef.current, {
-        scaleX: 0, duration: 1.4, ease: "power3.inOut", delay: 1.5, transformOrigin: "center center",
-      });
-    });
-    return () => ctx.revert();
+    };
+    playIntro();
+    window.addEventListener(ABOUT_HERO_REPLAY, playIntro);
+    return () => {
+      window.removeEventListener(ABOUT_HERO_REPLAY, playIntro);
+      ctx.revert();
+    };
   }, []);
 
   return (

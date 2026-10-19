@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { handleAboutLinkClick } from "@/lib/aboutNav";
 
 const footerLinks = [
   { href: "/about", label: "We Are" },
@@ -11,6 +13,8 @@ const footerLinks = [
 ];
 
 export default function Footer({ onSubscribeClick }) {
+  const pathname = usePathname();
+
   return (
     <footer className="bg-gray-950 text-white">
       {/* Main Footer Content */}
@@ -64,7 +68,10 @@ export default function Footer({ onSubscribeClick }) {
               <ul className="space-y-3">
                 {footerLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-gray-400 text-sm hover:text-white transition-colors">
+                    <Link
+                      href={link.href}
+                      onClick={link.href === "/about" ? (e) => handleAboutLinkClick(e, pathname) : undefined}
+                      className="text-gray-400 text-sm hover:text-white transition-colors">
                       {link.label}
                     </Link>
                   </li>

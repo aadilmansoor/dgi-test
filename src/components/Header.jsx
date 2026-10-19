@@ -126,7 +126,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
       }}
     >
       <div className="w-full px-4 lg:px-6 xl:px-8 relative z-50">
-        <nav className="flex items-center justify-between h-20 relative">
+        <nav className="flex items-center justify-between h-16 relative">
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -140,7 +140,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
           {/* Mobile Logo (Center) */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:hidden">
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
-              <img src="/images/logo-red.png" alt="Decograph Interiors" className="h-8 w-auto object-contain" />
+              <img src="/images/logo-red.png" alt="Decograph Interiors" className="h-7 w-auto object-contain" />
             </Link>
           </div>
 
@@ -194,7 +194,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
 
       {/* Mobile Full Screen Menu */}
       <div
-        className={`fixed inset-0 bg-white z-40 transition-transform duration-500 ease-in-out lg:hidden flex flex-col justify-start items-start pt-24 px-6 ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
+        className={`fixed inset-0 bg-white z-40 transition-transform duration-500 ease-in-out lg:hidden flex flex-col justify-start items-start pt-20 px-6 ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
         <ul className="flex flex-col items-start gap-0 w-full">
           {mainNavLinks.map((link) => {

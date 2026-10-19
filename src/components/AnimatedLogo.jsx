@@ -16,7 +16,7 @@ const ICON_H      = 609 / 1934;   // icon height, relative to logo width
 const ICON_CLIP_R = 80;           // right inset (%) that shows only the icon
 
 const REVEAL_END = 0.45;          // 0 → 45 %: text reveals · 45 → 100 %: fly to navbar
-const NAV_H      = 80;            // header h-20
+const NAV_H      = 64;            // header h-16
 const NAV_LOGO_W = 120;           // Header lg:w-[120px]
 
 const lerp    = (a, b, p) => a + (b - a) * p;

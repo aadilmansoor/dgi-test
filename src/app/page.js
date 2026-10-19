@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
@@ -176,11 +176,36 @@ export default function Home() {
           />
 
           {/* Mobile: same hero and about sections as desktop, without the pinned scroll animations */}
-          <div className="lg:hidden pt-20">
-            <div className="relative h-[calc(100svh-5rem)]">
+          <div className="lg:hidden pt-16">
+            <div className="relative h-[calc(100svh-4rem)] min-h-[520px]">
               {isDesktop === false && <HeroCarousel fixed={false} />}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <Image src="/images/logo.png" alt="Decograph Interiors" width={1934} height={663} priority className="w-3/5 max-w-[280px] h-auto" />
+              {/* Bottom fade so the copy stays legible over any clip */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
+              {/* pb-40 keeps the CTAs clear of the floating call/WhatsApp buttons */}
+              <div className="absolute inset-x-0 bottom-0 px-6 pb-40 text-white">
+                <p className="helvetica-regular uppercase tracking-[0.3em] text-[10px] text-white/70 mb-4">
+                  Interior Design &amp; Fit-Out Studio
+                </p>
+                <h1
+                  className="mb-8 max-w-[18ch]"
+                  style={{
+                    fontFamily: '"Deuterium Variable", sans-serif',
+                    fontWeight: 480,
+                    fontSize: "clamp(2rem, 9vw, 2.75rem)",
+                    lineHeight: 1.08,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  Where spaces transform and dreams come to life
+                </h1>
+                <div className="flex gap-3">
+                  <Link href="/works" className="flex-1 text-center bg-white text-decograph-red text-sm uppercase tracking-wider py-3.5">
+                    View Portfolio
+                  </Link>
+                  <Link href="/contact" className="flex-1 text-center border border-white/80 text-white text-sm uppercase tracking-wider py-3.5">
+                    Contact Us
+                  </Link>
+                </div>
               </div>
             </div>
             <AboutSectionMobile />

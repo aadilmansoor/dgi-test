@@ -24,6 +24,7 @@ const clamp01 = (v) => Math.min(1, Math.max(0, v));
 export default function AnimatedLogo({ onDockedChange }) {
   const iconRef = useRef(null); // Group 36.png — hero icon
   const logoRef = useRef(null); // logo.png  — full logo
+  const wrapRef = useRef(null); // fixed overlay the two images are centred in
   const dockedRef = useRef(false);
   const onDockedChangeRef = useRef(onDockedChange);
 
@@ -33,21 +34,21 @@ export default function AnimatedLogo({ onDockedChange }) {
   useEffect(() => {
     const icon = iconRef.current;
     const logo = logoRef.current;
-    if (!icon || !logo) return;
+    const wrap = wrapRef.current;
+    if (!icon || !logo || !wrap) return;
 
-    let startScale, navScale, deltaY;
+    let startScale, navScale, navCY;
     const measure = () => {
       // The navbar logo showing at this screen size (desktop or mobile), sized
       // from its CSS height when the image hasn't loaded yet.
       const target = [...document.querySelectorAll("[data-nav-logo]")].find((el) => el.offsetHeight > 0);
       const navW   = target ? target.offsetWidth || target.offsetHeight * LOGO_RATIO : 120;
       const rect   = target?.getBoundingClientRect();
-      const navCY  = rect ? rect.top + rect.height / 2 : 32;
+      navCY        = rect ? rect.top + rect.height / 2 : 32;
 
       const logoW = logo.offsetWidth;                         // CSS clamp resolved
       startScale  = icon.offsetHeight / (logoW * ICON_H);     // logo's icon == Group 36 size
       navScale    = navW / logoW;
-      deltaY      = navCY - window.innerHeight / 2;           // hero centre → navbar logo centre
     };
 
     // One continuous motion, driven by a single scrubbed value t (0 → 1):
@@ -70,6 +71,11 @@ export default function AnimatedLogo({ onDockedChange }) {
       const cy = lerp(ICON_CY, 0.5, r);
       const xp = -50 - 100 * scale * (cx - 0.5);
       const yp = -50 - 100 * scale * (cy - 0.5);
+
+      // Hero centre → navbar logo centre, from the overlay's height right now:
+      // on phones it changes as the address bar slides away, and a stale value
+      // would land the logo off the navbar one and make it jump at the hand-off.
+      const deltaY = navCY - wrap.clientHeight / 2;
 
       const started = t > 0;
       const docked  = t >= 0.999;
@@ -97,7 +103,33 @@ export default function AnimatedLogo({ onDockedChange }) {
     measure();
     render();
 
+    // Touch screens: a finger drag (and its momentum) is uneven, so tying the
+    // flight to it frame by frame looks jerky and can leave the logo stopped
+    // half-way. There the whole flight plays as one timed animation once the
+    // page starts to scroll, and plays back at the top.
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    const play = (to) => gsap.to(state, {
+      t:         to,
+      duration:  to ? 1.1 : 0.8,
+      ease:      "power2.inOut",
+      onUpdate:  render,
+      overwrite: true,
+    });
+
     const ctx = gsap.context(() => {
+      if (isTouch) {
+        if (window.scrollY > 8) { state.t = 1; render(); }    // loaded already scrolled
+        ScrollTrigger.create({
+          trigger:     document.body,
+          start:       8,
+          onEnter:     () => play(1),
+          onLeaveBack: () => play(0),
+          onRefresh:   () => { measure(); render(); },
+        });
+        return;
+      }
+
+      // Mouse and trackpad: the flight follows the scroll position.
       gsap.to(state, {
         t:        1,
         ease:     "none",
@@ -124,7 +156,7 @@ export default function AnimatedLogo({ onDockedChange }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50">
+    <div ref={wrapRef} className="fixed inset-0 pointer-events-none z-50">
       {/* Group 36.png — large standalone icon, anchored at hero centre */}
       <img
         ref={iconRef}

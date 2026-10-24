@@ -19,8 +19,8 @@ export default function PrivacyPolicyPage() {
       />
 
       {/* Content */}
-      <main className="max-w-[1000px] mx-auto px-6 lg:px-24 py-16">
-        <h1 className="font-serif text-5xl lg:text-6xl text-gray-900 mb-12">
+      <main className="section-y max-w-[1000px] mx-auto px-6 lg:px-24">
+        <h1 className="type-h1 text-decograph-red mb-12">
           Privacy Policy
         </h1>
 
@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-serif text-gray-900 mb-4">1. Information We Collect</h2>
+            <h2 className="type-h3 text-gray-900 mb-4">1. Information We Collect</h2>
             <p className="mb-4">
               We may collect information about you in a variety of ways. The information we may collect on the Site includes:
             </p>
@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-serif text-gray-900 mb-4">2. Use of Your Information</h2>
+            <h2 className="type-h3 text-gray-900 mb-4">2. Use of Your Information</h2>
             <p className="mb-4">
               Having accurate information about you permits us to provide you with a smooth, efficient, and customized experience. Specifically, we may use information collected about you via the Site to:
             </p>
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-serif text-gray-900 mb-4">3. Disclosure of Your Information</h2>
+            <h2 className="type-h3 text-gray-900 mb-4">3. Disclosure of Your Information</h2>
             <p className="mb-4">
               We may share information we have collected about you in certain situations. Your information may be disclosed as follows:
             </p>
@@ -81,14 +81,14 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-serif text-gray-900 mb-4">4. Security of Your Information</h2>
+            <h2 className="type-h3 text-gray-900 mb-4">4. Security of Your Information</h2>
             <p>
               We use administrative, technical, and physical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-serif text-gray-900 mb-4">5. Contact Us</h2>
+            <h2 className="type-h3 text-gray-900 mb-4">5. Contact Us</h2>
             <p className="mb-4">
               If you have questions or comments about this Privacy Policy, please contact us at:
             </p>

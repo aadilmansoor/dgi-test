@@ -54,9 +54,9 @@ export default function TrustStrip({ showTagline = false }) {
       <div className="max-w-5xl mx-auto">
         {showTagline && (
           <div className="text-center text-white mb-14">
-            <p className="text-xs md:text-sm uppercase tracking-[0.45em] text-white/70 mb-3">Transforming</p>
-            <h2 className="century-gothic text-3xl md:text-5xl font-bold tracking-wide mb-3">Visions into Reality</h2>
-            <p className="text-xs md:text-sm uppercase tracking-widest text-white/70">Elevate your lifestyle by redefining your space</p>
+            <p className="type-eyebrow text-white/70 mb-3">Transforming</p>
+            <h2 className="type-h2 font-bold mb-3">Visions into Reality</h2>
+            <p className="type-eyebrow text-white/70">Elevate your lifestyle by redefining your space</p>
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-0 text-white">

@@ -102,30 +102,18 @@ export default function CreativeSection() {
 
         {/* ── Text overlay ──────────────────────────────────────────── */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center px-6">
-          <p className="text-[10px] md:text-xs uppercase tracking-[0.45em] text-white/60 mb-5 helvetica-regular">
+          <p className="type-eyebrow text-white/60 mb-5">
             Decograph Interiors
           </p>
 
           <h2 className="leading-none mb-7">
             <span
-              className="block text-white/90 text-5xl md:text-6xl lg:text-7xl xl:text-[88px] mb-2 drop-shadow-lg"
-              style={{
-                fontFamily:
-                  '"Century Gothic","Futura",CenturyGothic,AppleGothic,"Trebuchet MS",sans-serif',
-                fontWeight: 300,
-                letterSpacing: "-0.01em",
-              }}
+              className="type-display block text-white/90 mb-2 drop-shadow-lg"
             >
               From Vision
             </span>
             <span
-              className="block text-white text-4xl md:text-5xl lg:text-6xl xl:text-7xl drop-shadow-lg"
-              style={{
-                fontFamily:
-                  '"Century Gothic","Futura",CenturyGothic,AppleGothic,"Trebuchet MS",sans-serif',
-                fontWeight: 400,
-                letterSpacing: "0.02em",
-              }}
+              className="type-h1 block text-white drop-shadow-lg"
             >
               to Built Reality
             </span>

@@ -28,11 +28,11 @@ function PhotoPlaceholder() {
 
 export default function TeamSection() {
   return (
-    <section id="team" className="py-24 px-6 lg:px-24 max-w-[1440px] mx-auto">
+    <section id="team" className="section-y px-6 lg:px-24 max-w-[1440px] mx-auto">
       {/* Section Header */}
       <div className="mb-14">
         <h2 className="about-heading text-decograph-red mb-4">Our Team</h2>
-        <p className="about-text text-[#3d3b3b] max-w-xl">
+        <p className="type-body text-gray-600 max-w-xl">
           Skilled designers, architects and craftsmen who bring spaces to life.
         </p>
       </div>
@@ -55,10 +55,10 @@ export default function TeamSection() {
               )}
               <div className="absolute inset-x-0 bottom-0 h-1 bg-decograph-red scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 group-hover:text-decograph-red transition-colors">
+            <h3 className="type-h3 text-gray-900 group-hover:text-decograph-red transition-colors">
               {member.name}
             </h3>
-            <p className="text-sm text-gray-500 font-light">{member.role}</p>
+            <p className="service-description text-gray-600">{member.role}</p>
           </div>
         ))}
       </div>

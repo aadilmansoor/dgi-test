@@ -122,7 +122,7 @@ export default function Footer({ onSubscribeClick }) {
               {onSubscribeClick && (
                 <button
                   onClick={onSubscribeClick}
-                  className="w-full py-3 bg-decograph-red text-white text-sm font-medium hover:bg-red-800 transition-colors"
+                  className="btn btn-solid w-full"
                 >
                   Subscribe Now
                 </button>

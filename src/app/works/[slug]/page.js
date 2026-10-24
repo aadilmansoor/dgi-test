@@ -32,7 +32,7 @@ export default function WorkDetailPage({ params }) {
   if (!project) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-light text-gray-900 mb-4">Project not found</h1>
+        <h1 className="type-h1 text-decograph-red mb-4">Project not found</h1>
         <Link href="/works" className="text-decograph-red hover:underline">
           Return to Works
         </Link>
@@ -60,7 +60,7 @@ export default function WorkDetailPage({ params }) {
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            <span style={{ fontFamily: 'Deuterium Variable, sans-serif', fontWeight: 400, fontSize: '20px' }}>{categoryName}</span>
+            <span className="text-xl">{categoryName}</span>
           </Link>
           <button 
             onClick={() => setIsMoreInfoOpen(!isMoreInfoOpen)}
@@ -74,7 +74,7 @@ export default function WorkDetailPage({ params }) {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            <span style={{ fontFamily: 'Deuterium Variable, sans-serif', fontWeight: 400, fontSize: '20px' }}>More Info</span>
+            <span className="text-xl">More Info</span>
           </button>
         </div>
 
@@ -83,13 +83,7 @@ export default function WorkDetailPage({ params }) {
           className={`overflow-hidden transition-all duration-300 ease-in-out ${isMoreInfoOpen ? 'max-h-96 opacity-100 py-6' : 'max-h-0 opacity-0'}`}
         >
           <p 
-            className="leading-relaxed border-b border-gray-200 pb-6 max-w-3xl"
-            style={{ 
-              fontFamily: 'Deuterium Variable, sans-serif',
-              fontWeight: 400,
-              fontSize: '16px',
-              color: '#4B5563'
-            }}
+            className="type-body text-gray-600 border-b border-gray-200 pb-6 max-w-3xl"
           >
              {project.sections && project.sections.length > 0 ? project.sections[0].description : "No description available."}
           </p>
@@ -111,7 +105,7 @@ export default function WorkDetailPage({ params }) {
               </>
             )}
           </div>
-          <h1 className="text-5xl lg:text-6xl font-light text-gray-900 tracking-tight">
+          <h1 className="type-h1 text-decograph-red">
             {project.title || "Project Title"}
           </h1>
         </div>
@@ -134,10 +128,10 @@ export default function WorkDetailPage({ params }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
           {project.sections && project.sections.map((section, idx) => (
              <div key={idx} className="space-y-3">
-               <h3 className="text-xl font-medium text-gray-900 mb-3">
+               <h3 className="type-h3 text-gray-900 mb-3">
                  {section.heading}
                </h3>
-               <p className="text-gray-600 leading-relaxed">
+               <p className="type-body text-gray-600">
                  {section.description}
                </p>
              </div>

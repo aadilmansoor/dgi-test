@@ -73,20 +73,20 @@ export default function RevealRow({ num, eyebrow, title, description, image, hre
           {num}
         </span>
         {eyebrow && (
-          <p className="text-xs uppercase tracking-[0.3em] text-decograph-red mb-2">{eyebrow}</p>
+          <p className="type-eyebrow text-decograph-red mb-2">{eyebrow}</p>
         )}
-        <h3 ref={titleRef} className="deuterium-regular text-gray-900 mb-4" style={{ fontSize: "clamp(1.5rem, 2.4vw, 2.2rem)" }}>
+        <h3 ref={titleRef} className="type-h3 text-gray-900 mb-4">
           {title}
         </h3>
         <div ref={lineRef} className="w-14 h-0.5 bg-decograph-red mb-5" />
         <div ref={descRef}>
-          {description && <p className="about-text text-gray-500 leading-relaxed mb-6">{description}</p>}
+          {description && <p className="type-body text-gray-600 mb-6">{description}</p>}
           {href && (
             <Link
               href={href}
-              className="inline-block text-decograph-red text-sm uppercase tracking-widest hover:opacity-70 transition-opacity"
+              className="btn btn-outline"
             >
-              {linkLabel} →
+              {linkLabel}
             </Link>
           )}
         </div>

@@ -38,17 +38,17 @@ const phases = [
 // One tall photo card per phase, numbered because the phases run in order.
 export default function HowWeWorkSection() {
   return (
-    <section id="process" className="py-24 px-6 lg:px-24">
+    <section id="process" className="section-y px-6 lg:px-24">
       <div className="max-w-[1440px] mx-auto">
         {/* Section Header */}
         <div className="mb-16 max-w-2xl">
           <h2 className="about-heading text-decograph-red mb-6">How Do We Work</h2>
-          <p className="about-text text-[#3d3b3b] leading-relaxed mb-4">
+          <p className="type-body text-gray-600 mb-4">
             To achieve our primary objective of ensuring client satisfaction, we
             meticulously follow a series of steps aimed at achieving perfection
             in interior design.
           </p>
-          <p className="about-text text-[#3d3b3b] leading-relaxed">
+          <p className="type-body text-gray-600">
             Our processes are carefully crafted to create spaces that radiate
             tranquility and captivate the eye, all with the ultimate aim of
             delighting each and every client. Client happiness is at the heart

@@ -54,13 +54,13 @@ export default function ContactPage() {
       <Header isWhiteBg={true} isDark={true} />
 
       {/* Content */}
-      <main className="max-w-[1280px] mx-auto px-6 lg:px-24 py-16">
+      <main className="section-y max-w-[1280px] mx-auto px-6 lg:px-24">
         {/* Page Header */}
         <div className="mb-16">
-          <h1 className="text-5xl lg:text-6xl font-light text-gray-900 tracking-tight mb-4">
+          <h1 className="type-h1 text-decograph-red mb-4">
             Contact Us
           </h1>
-          <p className="text-lg text-gray-600 max-w-xl">
+          <p className="type-body text-gray-600 max-w-xl">
             Let's create something extraordinary together. Reach out to discuss
             your next interior design project.
           </p>
@@ -73,7 +73,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Form */}
           <div>
-            <h2 className="text-3xl font-light text-gray-900 mb-6">
+            <h2 className="type-h2 text-decograph-red mb-6">
               Get in Touch
             </h2>
             <p className="text-gray-600 mb-8">
@@ -155,7 +155,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-decograph-red text-white font-medium rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-solid"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
               </button>
@@ -176,7 +176,7 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-medium text-gray-900 mb-3">
+              <h3 className="type-h3 text-gray-900 mb-3">
                 Office Location
               </h3>
               <div className="text-gray-600 space-y-1">
@@ -188,21 +188,21 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <h3 className="text-xl font-medium text-gray-900 mb-3">Email</h3>
+              <h3 className="type-h3 text-gray-900 mb-3">Email</h3>
               <div className="text-gray-600 space-y-1">
                 <p>info@decographinteriors.com</p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-medium text-gray-900 mb-3">Phone</h3>
+              <h3 className="type-h3 text-gray-900 mb-3">Phone</h3>
               <div className="text-gray-600 space-y-1">
                 <p>+971-563970724</p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-medium text-gray-900 mb-3">
+              <h3 className="type-h3 text-gray-900 mb-3">
                 Business Hours
               </h3>
               <div className="text-gray-600 space-y-1">

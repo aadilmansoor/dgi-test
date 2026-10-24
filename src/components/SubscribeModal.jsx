@@ -347,7 +347,7 @@ export default function SubscribeModal({ onClose }) {
 
       <div className="p-6 pt-14 md:p-16 lg:p-20">
         {/* Heading */}
-        <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight mb-6 md:mb-12">
+        <h2 className="type-h2 text-decograph-red mb-6 md:mb-12">
           Subscribe to stay inspired by thoughtful design
         </h2>
 

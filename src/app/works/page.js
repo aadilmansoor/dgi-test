@@ -74,18 +74,10 @@ export default function PortfolioPage() {
         </div>
         <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.65) 100%)" }} />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <h1
-            ref={heroTitleRef}
-            style={{
-              fontFamily: 'var(--font-cormorant), "Playfair Display", Georgia, serif',
-              fontStyle: "italic", fontWeight: 400,
-              fontSize: "clamp(4rem, 12vw, 11rem)",
-              color: "#fff", letterSpacing: "-0.02em", lineHeight: 0.95,
-            }}
-          >
+          <h1 ref={heroTitleRef} className="type-display text-white">
             Portfolio
           </h1>
-          <p ref={heroSubRef} className="helvetica-regular text-white/55 uppercase tracking-[0.4em] text-xs mt-7">
+          <p ref={heroSubRef} className="type-eyebrow text-white/60 mt-7">
             Decograph Interiors
           </p>
           <div ref={heroLineRef} className="w-24 h-px bg-white/30 mt-8" />
@@ -93,11 +85,11 @@ export default function PortfolioPage() {
       </section>
 
       {/* ── Intro ─────────────────────────────────────────────────────────── */}
-      <section className="pt-20 md:pt-28 pb-10 md:pb-14 px-6 lg:px-24 max-w-[1440px] mx-auto">
+      <section className="section-y !pb-10 md:!pb-14 px-6 lg:px-24 max-w-[1440px] mx-auto">
         <div>
           <h2 ref={introLeftRef} className="about-heading text-decograph-red mb-4">Our Works</h2>
           <div className="w-20 h-0.5 bg-decograph-red mb-8" />
-          <p ref={introRightRef} className="about-text text-gray-600 leading-loose max-w-2xl">
+          <p ref={introRightRef} className="type-body text-gray-600 max-w-2xl">
             From residential abodes that exude comfort and style to commercial
             spaces that inspire productivity and creativity, we orchestrate
             interiors that resonate with your purpose.
@@ -109,13 +101,13 @@ export default function PortfolioPage() {
       <section className="pb-16 md:pb-24 px-4 lg:px-8">
         <div className="max-w-[1400px] mx-auto">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="aspect-[4/3] bg-gray-100 animate-pulse" />
+                <div key={i} className="aspect-[4/3] md:aspect-[634/676] bg-gray-100 animate-pulse" />
               ))}
             </div>
           ) : categories.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               {categories.map((category) => (
                 <CategoryTile key={category.slug} {...category} />
               ))}
@@ -130,7 +122,7 @@ export default function PortfolioPage() {
 
       {/* ── Featured work from each category ──────────────────────────────── */}
       {featured.length > 0 && (
-        <section className="pt-20 md:pt-28">
+        <section className="section-y !pb-0">
           <div className="px-6 lg:px-24 max-w-[1440px] mx-auto mb-14">
             <h2 className="about-heading text-decograph-red mb-4">Featured Projects</h2>
             <div className="w-20 h-0.5 bg-decograph-red" />

@@ -37,7 +37,7 @@ export default function WorkCategoryPage({ params }) {
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              <span style={{ fontFamily: 'Deuterium Variable, sans-serif', fontWeight: 400, fontSize: '20px' }}>Our Work</span>
+              <span className="text-xl">Our Work</span>
             </Link>
 
             {category && (
@@ -45,7 +45,7 @@ export default function WorkCategoryPage({ params }) {
                 <span className="text-decograph-red">
                   <CategoryIcon iconSvg={category.iconSvg} iconUrl={category.iconUrl} size={28} />
                 </span>
-                <h1 className="truncate" style={{ fontFamily: 'Deuterium Variable, sans-serif', fontWeight: 400, fontSize: '20px' }}>
+                <h1 className="truncate text-xl">
                   {category.name}
                 </h1>
               </div>

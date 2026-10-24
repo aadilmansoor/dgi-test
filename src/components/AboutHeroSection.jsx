@@ -70,18 +70,10 @@ export default function AboutHeroSection() {
         </div>
         <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.65) 100%)" }} />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <h1
-            ref={heroTitleRef}
-            style={{
-              fontFamily: 'var(--font-cormorant), "Playfair Display", Georgia, serif',
-              fontStyle: "italic", fontWeight: 400,
-              fontSize: "clamp(4rem, 12vw, 11rem)",
-              color: "#fff", letterSpacing: "-0.02em", lineHeight: 0.95,
-            }}
-          >
+          <h1 ref={heroTitleRef} className="type-display text-white">
             About Us
           </h1>
-          <p ref={heroSubRef} className="helvetica-regular text-white/55 uppercase tracking-[0.4em] text-xs mt-7">
+          <p ref={heroSubRef} className="type-eyebrow text-white/60 mt-7">
             Decograph Interiors
           </p>
           <div ref={heroLineRef} className="w-24 h-px bg-white/30 mt-8" />
@@ -89,18 +81,9 @@ export default function AboutHeroSection() {
       </section>
 
       {/* ── Introduction ──────────────────────────────────────────────────── */}
-      <section className="px-6 lg:px-24 max-w-[1440px] mx-auto py-20 md:py-28 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-14 lg:gap-20 items-center">
+      <section className="section-y px-6 lg:px-24 max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-14 lg:gap-20 items-center">
         <div className="max-w-xl">
-          <h2
-            className="text-decograph-red mb-8"
-            style={{
-              fontFamily: '"Deuterium Variable", sans-serif',
-              fontWeight: 480,
-              fontSize: "clamp(2rem, 3.8vw, 3.25rem)",
-              lineHeight: 1.1,
-              letterSpacing: "-0.01em",
-            }}
-          >
+          <h2 className="type-h2 text-decograph-red mb-8">
             Where spaces transform and dreams come to life
           </h2>
           <p className="about-text text-gray-700 leading-relaxed mb-5">

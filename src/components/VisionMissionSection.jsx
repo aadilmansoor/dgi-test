@@ -20,7 +20,7 @@ const statements = [
 
 export default function VisionMissionSection() {
   return (
-    <section className="px-6 lg:px-24 py-20 md:py-28">
+    <section className="section-y px-6 lg:px-24">
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20">
         {statements.map(({ title, paragraphs }) => (
           <div key={title} className="border-t-2 border-decograph-red pt-8">

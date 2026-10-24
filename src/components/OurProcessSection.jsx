@@ -74,40 +74,13 @@ export default function OurProcessSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-white pt-16 md:pt-24 pb-0 overflow-hidden">
+    <section ref={sectionRef} className="section-y !pb-0 bg-white overflow-hidden">
 
       {/* ── Heading block ─────────────────────────────────────────── */}
       <div ref={headingRef} className="text-center px-6 mb-10 md:mb-14">
-        <h2 className="leading-none mb-8">
-          <em
-            style={{
-              fontFamily: 'var(--font-cormorant), "Playfair Display", Georgia, serif',
-              fontStyle:  "italic",
-              fontWeight: 400,
-              fontSize:   "clamp(2.5rem, 5.5vw, 5rem)",
-              letterSpacing: "0em",
-              color: "#111",
-            }}
-          >
-            Our
-          </em>{" "}
-          <span
-            style={{
-              fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-              fontWeight: 700,
-              fontSize:   "clamp(2.5rem, 5.5vw, 5rem)",
-              letterSpacing: "-0.02em",
-              color: "#111",
-            }}
-          >
-            Process
-          </span>
-        </h2>
+        <h2 className="type-h2 text-decograph-red mb-6">Our Process</h2>
 
-        <p
-          className="text-gray-500 max-w-3xl mx-auto leading-relaxed text-center"
-          style={{ fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)" }}
-        >
+        <p className="type-body text-gray-600 max-w-3xl mx-auto text-center">
           At Decograph, process is our commitment to excellence. We combine
           technical knowledge, creative vision, and attention to detail to
           deliver interiors that embody long-term value and design distinction.
@@ -142,13 +115,7 @@ export default function OurProcessSection() {
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span
-              className="text-white transition-transform duration-500 ease-out group-hover:-translate-y-2"
-              style={{
-                fontFamily: '"Century Gothic","Futura",CenturyGothic,AppleGothic,"Trebuchet MS",sans-serif',
-                fontWeight: 400,
-                fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
-                letterSpacing: "0.04em",
-              }}
+              className="type-h2 text-white transition-transform duration-500 ease-out group-hover:-translate-y-2"
             >
               Design
             </span>
@@ -179,13 +146,7 @@ export default function OurProcessSection() {
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span
-              className="text-white transition-transform duration-500 ease-out group-hover:-translate-y-2"
-              style={{
-                fontFamily: '"Century Gothic","Futura",CenturyGothic,AppleGothic,"Trebuchet MS",sans-serif',
-                fontWeight: 400,
-                fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
-                letterSpacing: "0.04em",
-              }}
+              className="type-h2 text-white transition-transform duration-500 ease-out group-hover:-translate-y-2"
             >
               Build
             </span>

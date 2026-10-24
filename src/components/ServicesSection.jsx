@@ -42,7 +42,7 @@ function ServiceCard({ service, idx }) {
       </h3>
 
       {/* Description */}
-      <p className="service-description text-gray-500 leading-relaxed">
+      <p className="service-description text-gray-600 leading-relaxed">
         {service.description}
       </p>
     </div>
@@ -57,9 +57,9 @@ export default function ServicesSection() {
     : fallbackServices;
 
   return (
-    <section id="services" className="py-16 px-6 lg:px-24 max-w-[1440px] mx-auto">
+    <section id="services" className="section-y px-6 lg:px-24 max-w-[1440px] mx-auto">
       <h2 className="about-heading text-decograph-red mb-4">Services</h2>
-      <p className="about-text text-gray-900 max-w-xl mb-12">
+      <p className="type-body text-gray-600 max-w-xl mb-12">
         Our services are designed to transform spaces through expert planning,
         skilled execution, and attention to detail across every stage of the project.
       </p>

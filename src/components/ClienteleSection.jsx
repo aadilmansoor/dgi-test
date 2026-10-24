@@ -9,10 +9,10 @@ export default function ClienteleSection() {
   // Loading skeleton or null state
   if (isLoading) {
     return (
-      <section id="clientele" className="py-24 px-6 lg:px-24 max-w-[1440px] mx-auto">
+      <section id="clientele" className="section-y px-6 lg:px-24 max-w-[1440px] mx-auto">
         <div className="text-center mb-16">
           <h2 className="about-heading text-decograph-red mb-4">Clientele</h2>
-          <p className="about-text text-gray-900 max-w-xl mx-auto">
+          <p className="type-body text-gray-600 max-w-xl mx-auto">
             Building long-term partnerships with leading organizations across diverse industries.
           </p>
         </div>
@@ -26,13 +26,13 @@ export default function ClienteleSection() {
   }
 
   return (
-    <section id="clientele" className="py-24 px-6 lg:px-24 max-w-[1440px] mx-auto">
+    <section id="clientele" className="section-y px-6 lg:px-24 max-w-[1440px] mx-auto">
       {/* Section Header */}
       <div className="text-center mb-16">
         <h2 className="about-heading text-decograph-red mb-4">
           Clientele
         </h2>
-        <p className="about-text text-gray-900 max-w-xl mx-auto">
+        <p className="type-body text-gray-600 max-w-xl mx-auto">
           Building long-term partnerships with leading organizations across
           diverse industries.
         </p>

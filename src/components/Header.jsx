@@ -113,6 +113,16 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
     return effectiveDark ? "text-black" : "text-white";
   };
 
+  // Over a hero photo a hovered link gets the active link's outline pill (a
+  // colour change would be lost on dark or busy photos); on white it turns red.
+  // The border is always there, transparent, so hovering doesn't shift the menu.
+  const navLinkClass = (href) => [
+    "px-3 py-1.5 text-sm font-normal rounded-full border transition-colors duration-300",
+    getTextColor(href),
+    isLinkActive(href) ? "border-current" : "border-transparent",
+    effectiveDark ? "hover:text-decograph-red" : "hover:border-current",
+  ].join(" ");
+
   const logoSrc = (isWhiteBg || isMenuOpen || (hideOnScrollDown && isScrolledPastHero)) ? "/images/logo-red.png" : "/images/logo.png";
   const desktopBgClass = isWhiteBg ? "lg:bg-white" : "lg:bg-transparent";
   const mobileOverHero = transparentOnMobile && !isWhiteBg && !isMenuOpen;
@@ -156,7 +166,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
                 <Link
                   href={link.href}
                   onClick={link.href === "/about" ? (e) => handleAboutLinkClick(e, pathname) : undefined}
-                  className={`px-3 py-1.5 text-sm font-normal transition-colors duration-300 ${getTextColor(link.href)} ${isDark ? "hover:text-decograph-red" : "hover:text-black"} ${isLinkActive(link.href) ? "border border-current rounded-full" : ""}`}
+                  className={navLinkClass(link.href)}
                 >
                   {link.label}
                 </Link>
@@ -167,7 +177,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
             <li>
               <Link
                 href="/about#clientele"
-                className={`px-3 py-1.5 text-sm font-normal transition-colors duration-300 ${getTextColor("/about#clientele")} ${isDark ? "hover:text-decograph-red" : "hover:text-black"} ${isLinkActive("/about#clientele") ? "border border-current rounded-full" : ""}`}
+                className={navLinkClass("/about#clientele")}
               >
                 Clientele
               </Link>
@@ -185,7 +195,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
           {/* Contact Us Button (Desktop) */}
           <Link
             href="/contact"
-            className={`century-gothic hidden lg:flex items-center gap-2 px-5 py-2 text-sm font-normal border transition-colors duration-300 ${
+            className={`btn hidden lg:inline-flex px-5 py-2 text-xs ${
               effectiveDark
                 ? "border-decograph-red text-decograph-red hover:bg-decograph-red hover:text-white"
                 : "border-white text-white hover:bg-white hover:text-decograph-red"
@@ -237,7 +247,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
             <Link
               href="/contact"
               onClick={() => setIsMenuOpen(false)}
-              className="inline-block px-6 py-3 border-2 border-decograph-red text-decograph-red text-lg font-normal uppercase hover:bg-decograph-red hover:text-white transition-colors"
+              className="btn text-base border-decograph-red text-decograph-red hover:bg-decograph-red hover:text-white"
             >
               Contact Us
             </Link>

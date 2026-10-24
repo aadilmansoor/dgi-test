@@ -30,7 +30,7 @@ export default function CategoryTile({ name, slug, coverImage, image, href, size
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-[11%] flex justify-center px-4">
-        <h3 className="text-white" style={{ fontSize: "clamp(2rem, 13.4cqw, 5.4rem)", lineHeight: 0.82, fontWeight: 400 }}>
+        <h3 className="text-white" style={{ fontSize: "clamp(1.5rem, 9cqw, 3.6rem)", lineHeight: 0.9, fontWeight: 400 }}>
           {titleLines(name).map((line) => (
             <span key={line} className="block">{line}</span>
           ))}

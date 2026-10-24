@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import Header from "@/components/Header";
-import HomeHero from "@/components/HomeHero";
+import HeroCarousel from "@/components/HeroCarousel";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import HomeAboutSection from "@/components/HomeAboutSection";
 import HomeCategories from "@/components/HomeCategories";
@@ -107,8 +107,8 @@ export default function Home() {
         {/* Header/Navigation */}
         <Header onSubscribeClick={openSubscribe} isDark={isNavDark} isWhiteBg={isNavWhiteBg} hideLogo={!isNavLogoVisible} transparentOnMobile />
 
-        {/* Hero, fixed behind the page */}
-        <HomeHero />
+        {/* Hero video, fixed behind the page */}
+        <HeroCarousel />
 
         {/* Logo that flies from the hero into the navbar as the page scrolls */}
         <AnimatedLogo onDockedChange={setIsNavLogoVisible} />
@@ -125,13 +125,18 @@ export default function Home() {
             isNavLogoVisible ? "" : "pointer-coarse:translate-y-[60vh]"
           }`}
         >
-          {/* Interior photo fading into the watercolour building (rendered from the design) */}
-          <div ref={transitionRef} className="bg-white">
+          {/* Watercolour building (transparent PNG-style image). Its background
+              fades from clear at the top edge (no seam against the hero video
+              behind) to solid white over the top 30% on an eased curve; the rest is white. */}
+          <div
+            ref={transitionRef}
+            className="bg-[linear-gradient(to_bottom,rgba(255,255,255,0)_0%,rgba(255,255,255,0.08)_3.75%,rgba(255,255,255,0.25)_8.25%,rgba(255,255,255,0.47)_12%,rgba(255,255,255,0.68)_16.5%,rgba(255,255,255,0.85)_21%,rgba(255,255,255,0.96)_25.5%,#fff_30%)]"
+          >
             <Image
-              src="/images/home/transition.jpg"
+              src="/images/home/building.webp"
               alt=""
-              width={2880}
-              height={2355}
+              width={2000}
+              height={1384}
               sizes="100vw"
               className="block w-full h-auto"
             />

@@ -9,14 +9,16 @@ export default function HomeAboutSection() {
   return (
     <section className="bg-white px-6 pt-14 pb-20 lg:pl-[20.5vw] lg:pr-[8vw] lg:pt-[4.5vw] lg:pb-[10.5vw]">
       <div
-        className="flex flex-col gap-8 lg:flex-row lg:gap-[2.6vw]"
+        className="flow-root lg:flex lg:flex-row lg:gap-[2.6vw]"
         style={{ fontSize: "clamp(1.05rem, 1.5625vw, 2.25rem)", lineHeight: 1.22 }}
       >
-        {/* The mark itself (Group 36.png) is the mask, filled grey. On large
-            screens the text is 11 lines of 1.22em, and the mark spans them. */}
+        {/* The mark itself (Group 36.png) is the mask, filled grey. On phones
+            and tablets it floats like a drop cap, just under five lines (5 × 1.22em) tall,
+            with the text running beside it and then underneath. On large
+            screens the text is 11 lines and the mark spans them all. */}
         <div
           aria-hidden="true"
-          className="h-28 shrink-0 self-start bg-[#767676] lg:h-[13.42em]"
+          className="float-left mr-4 h-[6em] bg-[#767676] lg:float-none lg:mr-0 lg:h-[13.42em] lg:shrink-0"
           style={{
             aspectRatio: "170 / 305",
             WebkitMaskImage: ICON_MASK,

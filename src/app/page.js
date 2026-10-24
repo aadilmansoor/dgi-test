@@ -125,13 +125,12 @@ export default function Home() {
             isNavLogoVisible ? "" : "pointer-coarse:translate-y-[60vh]"
           }`}
         >
-          {/* Watercolour building (transparent PNG-style image). Its background
-              fades from clear at the top edge (no seam against the hero video
-              behind) to solid white over the top 30% on an eased curve; the rest is white. */}
-          <div
-            ref={transitionRef}
-            className="bg-[linear-gradient(to_bottom,rgba(255,255,255,0)_0%,rgba(255,255,255,0.08)_3.75%,rgba(255,255,255,0.25)_8.25%,rgba(255,255,255,0.47)_12%,rgba(255,255,255,0.68)_16.5%,rgba(255,255,255,0.85)_21%,rgba(255,255,255,0.96)_25.5%,#fff_30%)]"
-          >
+          {/* Watercolour building on a transparent background, so it sits
+              straight over the hero video behind. White fills in behind the
+              bottom from 80% down: the painted ground is solid from 65% to
+              88% of the image, so the join is hidden, and the ragged edge
+              below it then shows white rather than the video. */}
+          <div ref={transitionRef} className="bg-[linear-gradient(to_bottom,transparent_80%,#fff_80%)]">
             <Image
               src="/images/home/building.webp"
               alt=""

@@ -25,7 +25,10 @@ export default function CategoryTile({ name, slug, coverImage, image, href, size
           alt={name}
           fill
           sizes={sizes}
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          // Black and white at rest; colour and a slow, gentle zoom on hover or
+          // keyboard focus. The zoom eases out over 1.2s (GPU layer via
+          // will-change) and the colour fades in over 0.7s.
+          className="object-cover grayscale will-change-transform [transition:transform_1.2s_cubic-bezier(0.22,1,0.36,1),filter_0.7s_ease] group-hover:scale-[1.04] group-hover:grayscale-0 group-focus-visible:grayscale-0"
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />

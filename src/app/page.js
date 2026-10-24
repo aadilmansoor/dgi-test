@@ -68,14 +68,14 @@ export default function Home() {
     };
   }, [isScrolled]);
 
-  // Navbar turns white with dark text once the building scene's white lower
-  // half reaches the top; above that its white text sits over the photo.
+  // Navbar turns white with dark text as soon as the building scene reaches
+  // the top; over the hero it stays transparent with white text.
   useEffect(() => {
     if (!transitionRef.current) return;
 
     const trigger = ScrollTrigger.create({
       trigger: transitionRef.current,
-      start: "35% top",
+      start: "top top",
       onEnter: () => {
         setIsNavDark(true);
         setIsNavWhiteBg(true);
@@ -104,8 +104,10 @@ export default function Home() {
         {/* Logo that flies from the hero into the navbar as the page scrolls */}
         <AnimatedLogo onDockedChange={setIsNavLogoVisible} />
 
-        {/* Content stack that slides up over the hero */}
-        <div className="relative z-10 mt-[100vh]">
+        {/* Content stack that slides up over the hero. It starts two screens
+            down: the logo animation uses the first screen of scrolling, so the
+            content only begins to rise once the logo has docked. */}
+        <div className="relative z-10 mt-[200vh]">
           {/* Interior photo fading into the watercolour building (rendered from the design) */}
           <div ref={transitionRef} className="bg-white">
             <Image

@@ -54,9 +54,9 @@ export default function RootLayout({ children }) {
   return (
     // data-scroll-behavior lets Next.js switch smooth scrolling off while it
     // resets scroll on route changes, so new pages open at the top.
-    <html lang="en" className="scroll-smooth overscroll-none" data-scroll-behavior="smooth">
+    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <body
-        className={`${didactGothic.variable} antialiased overscroll-none`}
+        className={`${didactGothic.variable} antialiased`}
       >
         <QueryProvider>
           {children}

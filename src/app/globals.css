@@ -263,9 +263,13 @@
     @apply border-border outline-ring/50;
   }
 
-  html,
-  body {
-    overscroll-behavior: none;
+  /* No rubber-band bounce past the page edges with a mouse or trackpad. Touch
+     screens keep it, since pull-to-refresh is the same gesture. */
+  @media (pointer: fine) {
+    html,
+    body {
+      overscroll-behavior: none;
+    }
   }
 
   /* Brand typeface: Century Gothic where it is installed (no web licence yet),

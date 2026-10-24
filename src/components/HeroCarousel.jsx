@@ -1,147 +1,120 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const heroVideos = [
-  "/images/DRESSING_01%20(1).webm",
-  "/images/DRESSING_02.webm",
-  "/images/DRESSING_03.webm",
-  "/images/DRESSING_04.webm",
-  "/images/L%2001.webm",
-  "/images/L%2002.webm",
-  "/images/L%2003.webm",
-  "/images/sheraton%20club%20lounge_01.webm",
-  "/images/sheraton%20club%20lounge_02.webm",
-  "/images/sheraton%20club%20lounge_03.webm",
-  "/images/sheraton%20club%20lounge_04.webm",
-];
+// The 11 project clips, in order, re-encoded at two sizes: 1080p for desktop
+// and 720p for phones (much smaller downloads on mobile data).
+const CLIP_COUNT = 11;
+const clipSrc = (i, res) => `/videos/hero/${res}/${String(i + 1).padStart(2, "0")}.webm`;
 
-// Hero images organized by row (7 images per row)
-const heroImageRows = [
-  // Row 1: images 1-7
-  [
-    "/images/hero/hero-1.webp",
-    "/images/hero/hero-2.webp",
-    "/images/hero/hero-3.webp",
-    "/images/hero/hero-4.webp",
-    "/images/hero/hero-5.webp",
-    "/images/hero/hero-6.webp",
-    "/images/hero/hero-7.webp",
-  ],
-  // Row 2: images 8-14
-  [
-    "/images/hero/hero-8.webp",
-    "/images/hero/hero-9.webp",
-    "/images/hero/hero-10.webp",
-    "/images/hero/hero-11.webp",
-    "/images/hero/hero-12.webp",
-    "/images/hero/hero-13.webp",
-    "/images/hero/hero-14.webp",
-  ],
-  // Row 3: images 15-17 + 1-4
-  [
-    "/images/hero/hero-15.webp",
-    "/images/hero/hero-16.webp",
-    "/images/hero/hero-17.webp",
-    "/images/hero/hero-1.webp",
-    "/images/hero/hero-2.webp",
-    "/images/hero/hero-3.webp",
-    "/images/hero/hero-4.webp",
-  ],
-  // Row 4: images 5-11
-  [
-    "/images/hero/hero-5.webp",
-    "/images/hero/hero-6.webp",
-    "/images/hero/hero-7.webp",
-    "/images/hero/hero-8.webp",
-    "/images/hero/hero-9.webp",
-    "/images/hero/hero-10.webp",
-    "/images/hero/hero-11.webp",
-  ],
-];
+const FADE_S = 0.8; // crossfade length, and how early before the end it starts
 
-const CarouselRow = ({ rowIndex, isPaused, setIsPaused }) => {
-  const images = heroImageRows[rowIndex] || heroImageRows[0];
-  // Duplicate images multiple times for seamless infinite loop
-  const allImages = [...images, ...images, ...images, ...images];
-  const trackRef = useRef(null);
+// Home hero: the clips play one after another, pinned behind the page while
+// the content scrolls up over it.
+//
+// Two <video> slots take turns: while one plays, the next clip is already
+// loading in the other, hidden one. Near the end of a clip the hidden slot
+// starts and fades in over it, so the browser never has to blank a video
+// while it loads a new file (the black blink between clips). If the next clip
+// isn't ready yet, the current one holds its last frame until it is.
+export default function HeroCarousel() {
+  const slotARef = useRef(null);
+  const slotBRef = useRef(null);
+  const [front, setFront] = useState(0);         // slot on top, fading in
+  const [fadingFrom, setFadingFrom] = useState(null); // slot underneath during a fade
 
-  return (
-    <div 
-      className="w-full overflow-hidden"
-      ref={trackRef}
-    >
-      <div 
-        className="carousel-track flex gap-[130px] pr-[130px]"
-        style={{ animationPlayState: isPaused ? "paused" : "running" }}
-      >
-        {allImages.map((src, idx) => (
-          <div
-            key={idx}
-            className="flex-shrink-0 group relative"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            <div className="w-[160px] h-[100px] overflow-hidden">
-              <img
-                src={src}
-                alt={`Interior Design Project ${idx + 1}`}
-                className="w-full h-full object-cover"
-                draggable="false"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// `fixed` pins the hero behind the page (desktop); otherwise it sits in the page flow (mobile).
-export default function HeroCarousel({ fixed = true }) {
-  const [isPaused, setIsPaused] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const videoRef = useRef(null);
-
-  // When the index changes, load and play the new video
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.src = heroVideos[currentIndex];
-    video.load();
-    video.play().catch(() => {});
-  }, [currentIndex]);
+    const slots = [slotARef.current, slotBRef.current];
+    const res = window.matchMedia("(max-width: 767px)").matches ? 720 : 1080;
+    const clipIn = [0, 1];  // clip index loaded in each slot
+    let frontSlot = 0;
+    let switching = false;
+    let fadeTimer;
 
-  const handleEnded = () => {
-    setCurrentIndex((prev) => (prev + 1) % heroVideos.length);
-  };
+    const load = (slot, clip) => {
+      clipIn[slot] = clip;
+      slots[slot].src = clipSrc(clip, res);
+      slots[slot].load();
+    };
+
+    const swap = () => {
+      if (switching) return;
+      const back = 1 - frontSlot;
+      const next = slots[back];
+      // Not buffered yet: wait for it (the playing clip holds its last frame)
+      if (next.readyState < 3) {
+        next.addEventListener("canplay", swap, { once: true });
+        return;
+      }
+      switching = true;
+      next.currentTime = 0;
+      next.play().catch(() => {});
+      const old = frontSlot;
+      frontSlot = back;
+      setFadingFrom(old);
+      setFront(back);
+
+      // Once the fade is over, queue the clip after next in the slot that faded out
+      fadeTimer = setTimeout(() => {
+        setFadingFrom(null);
+        slots[old].pause();
+        load(old, (clipIn[back] + 1) % CLIP_COUNT);
+        switching = false;
+      }, FADE_S * 1000 + 100);
+    };
+
+    const onTime = (slot) => () => {
+      const v = slots[slot];
+      if (slot !== frontSlot || !v.duration) return;
+      if (v.duration - v.currentTime <= FADE_S) swap();
+    };
+    const onEnded = (slot) => () => {
+      if (slot === frontSlot) swap(); // safety net if timeupdate missed the window
+    };
+
+    const listeners = slots.map((v, slot) => {
+      const time = onTime(slot);
+      const ended = onEnded(slot);
+      v.addEventListener("timeupdate", time);
+      v.addEventListener("ended", ended);
+      return () => {
+        v.removeEventListener("timeupdate", time);
+        v.removeEventListener("ended", ended);
+        v.removeEventListener("canplay", swap);
+      };
+    });
+
+    load(0, 0);
+    slots[0].play().catch(() => {});
+    load(1, 1);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      listeners.forEach((off) => off());
+    };
+  }, []);
+
+  // The incoming clip fades in on top while the outgoing one stays fully
+  // visible underneath, so the fade never dips towards the black behind.
+  const slotProps = (slot) => ({
+    muted: true,
+    playsInline: true,
+    preload: "auto",
+    className: "absolute inset-0 w-full h-full object-cover transition-opacity ease-linear",
+    style: {
+      zIndex: front === slot ? 2 : 1,
+      opacity: front === slot || fadingFrom === slot ? 1 : 0,
+      transitionDuration: front === slot ? `${FADE_S * 1000}ms` : "0ms",
+    },
+  });
 
   return (
-    <section className={`${fixed ? "fixed inset-0 h-screen z-0" : "relative h-full"} bg-black overflow-hidden`}>
-      {/* Background Video — cycles through all 11 clips */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        onEnded={handleEnded}
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      >
-        <source src={heroVideos[0]} type="video/webm" />
-      </video>
-      
-      {/* Dark Overlay over Video */}
-      <div className="absolute inset-0 bg-black/40 z-0 pointer-events-none" />
+    <section className="fixed inset-0 h-screen z-0 bg-black overflow-hidden">
+      <video ref={slotARef} {...slotProps(0)} />
+      <video ref={slotBRef} {...slotProps(1)} />
 
-      {/* Carousel Container */}
-      <div className="relative z-10 h-full flex flex-col justify-evenly pointer-events-none">
-        {/*
-        <CarouselRow rowIndex={0} isPaused={isPaused} setIsPaused={setIsPaused} />
-        <CarouselRow rowIndex={1} isPaused={isPaused} setIsPaused={setIsPaused} />
-        <CarouselRow rowIndex={2} isPaused={isPaused} setIsPaused={setIsPaused} />
-        <CarouselRow rowIndex={3} isPaused={isPaused} setIsPaused={setIsPaused} />
-        */}
-      </div>
+      {/* Dark overlay so the logo reads over every clip */}
+      <div className="absolute inset-0 bg-black/40 pointer-events-none" />
     </section>
   );
 }

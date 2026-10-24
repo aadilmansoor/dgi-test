@@ -377,22 +377,6 @@
   .section-y { padding-block: clamp(4rem, 7vw, 7rem); }
 }
 
-/* Hero Carousel Animation */
-.carousel-track {
-  animation: carousel-scroll 160s linear infinite;
-  width: max-content;
-}
-
-@keyframes carousel-scroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
 /* Modal Animations */
 .animate-slideUp {
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;

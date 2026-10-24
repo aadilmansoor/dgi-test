@@ -156,7 +156,9 @@ export default function AnimatedLogo({ onDockedChange }) {
   }, []);
 
   return (
-    <div ref={wrapRef} className="fixed inset-0 pointer-events-none z-50">
+    // z-30: above the page content (z-10) but under the mobile menu (z-40) and
+    // the navbar (z-50), so opening the menu covers the logo.
+    <div ref={wrapRef} className="fixed inset-0 pointer-events-none z-30">
       {/* Group 36.png — large standalone icon, anchored at hero centre */}
       <img
         ref={iconRef}

@@ -110,7 +110,7 @@ export default function AnimatedLogo({ onDockedChange }) {
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     const play = (to) => gsap.to(state, {
       t:         to,
-      duration:  to ? 1.1 : 0.8,
+      duration:  to ? 0.8 : 0.6,
       ease:      "power2.inOut",
       onUpdate:  render,
       overwrite: true,

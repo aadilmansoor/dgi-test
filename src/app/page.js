@@ -89,6 +89,15 @@ export default function Home() {
     return () => trigger.kill();
   }, []);
 
+  // On touch screens the content's hold-back offset changes when the logo
+  // docks; once it has slid into place, re-measure the scroll triggers so the
+  // navbar switch above fires at the content's real position.
+  useEffect(() => {
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+    const id = setTimeout(() => ScrollTrigger.refresh(), 750);
+    return () => clearTimeout(id);
+  }, [isNavLogoVisible]);
+
   const openSubscribe = () => setSubscribeOpen(true);
   const closeSubscribe = () => setSubscribeOpen(false);
 
@@ -104,10 +113,18 @@ export default function Home() {
         {/* Logo that flies from the hero into the navbar as the page scrolls */}
         <AnimatedLogo onDockedChange={setIsNavLogoVisible} />
 
-        {/* Content stack that slides up over the hero. It starts two screens
-            down: the logo animation uses the first screen of scrolling, so the
-            content only begins to rise once the logo has docked. */}
-        <div className="relative z-10 mt-[200vh]">
+        {/* Content stack that slides up over the hero. With a mouse or trackpad
+            the logo animation uses the first screen of scrolling, so the content
+            starts two screens down and only rises once the logo has docked.
+            On touch screens the logo flies on its own (under a second), however
+            far the finger moved. There the content starts just below the hero
+            but is held 60vh lower until the logo docks, then slides up into
+            place, so it arrives right after the logo, not before or long after. */}
+        <div
+          className={`relative z-10 mt-[200vh] pointer-coarse:mt-[110vh] pointer-coarse:transition-transform pointer-coarse:duration-700 pointer-coarse:ease-out ${
+            isNavLogoVisible ? "" : "pointer-coarse:translate-y-[60vh]"
+          }`}
+        >
           {/* Interior photo fading into the watercolour building (rendered from the design) */}
           <div ref={transitionRef} className="bg-white">
             <Image

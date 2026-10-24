@@ -11,7 +11,9 @@ const mainNavLinks = [
   { href: "/works", label: "Portfolio" },
 ];
 
-export default function Header({ isDark = false, isWhiteBg = false, hideLogo = false, hideOnScrollDown = false }) {
+// `transparentOnMobile` (home page) lets the mobile bar follow `isWhiteBg` like the
+// desktop one: transparent with a white logo over the hero, white below it.
+export default function Header({ isDark = false, isWhiteBg = false, hideLogo = false, hideOnScrollDown = false, transparentOnMobile = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [isNavHidden, setIsNavHidden] = useState(false);
@@ -113,9 +115,11 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
 
   const logoSrc = (isWhiteBg || isMenuOpen || (hideOnScrollDown && isScrolledPastHero)) ? "/images/logo-red.png" : "/images/logo.png";
   const desktopBgClass = isWhiteBg ? "lg:bg-white" : "lg:bg-transparent";
+  const mobileOverHero = transparentOnMobile && !isWhiteBg && !isMenuOpen;
   const headerBg = (hideOnScrollDown && isScrolledPastHero)
     ? "bg-white shadow-sm"
-    : `bg-white ${desktopBgClass}`;
+    : `${mobileOverHero ? "bg-transparent" : "bg-white"} ${desktopBgClass}`;
+  const toggleBarColor = mobileOverHero ? "bg-white" : "bg-black";
 
   return (
     <>
@@ -134,19 +138,19 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
             className="lg:hidden p-2 -ml-2 hover:opacity-70 transition-opacity flex flex-col justify-center gap-[6px] w-8 h-8"
             aria-label="Toggle Menu"
           >
-            <span className={`block w-6 h-0.5 bg-black transition-transform duration-300 ease-in-out origin-center ${isMenuOpen ? "rotate-45 translate-y-[4px]" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-black transition-transform duration-300 ease-in-out origin-center ${isMenuOpen ? "-rotate-45 -translate-y-[4px]" : ""}`} />
+            <span className={`block w-6 h-0.5 ${toggleBarColor} transition-transform duration-300 ease-in-out origin-center ${isMenuOpen ? "rotate-45 translate-y-[4px]" : ""}`} />
+            <span className={`block w-6 h-0.5 ${toggleBarColor} transition-transform duration-300 ease-in-out origin-center ${isMenuOpen ? "-rotate-45 -translate-y-[4px]" : ""}`} />
           </button>
 
           {/* Mobile Logo (Center) */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:hidden">
+          <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:hidden ${hideLogo && !isMenuOpen ? "opacity-0 pointer-events-none" : ""}`}>
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
-              <img src="/images/logo-red.png" alt="Decograph Interiors" className="h-7 w-auto object-contain" />
+              <img data-nav-logo src={mobileOverHero ? "/images/logo.png" : "/images/logo-red.png"} alt="Decograph Interiors" className="h-7 w-auto object-contain" />
             </Link>
           </div>
 
           {/* Left Navigation (Desktop) */}
-          <ul className="hidden lg:flex items-center gap-0 xl:gap-1">
+          <ul className="century-gothic hidden lg:flex items-center gap-0 xl:gap-1">
             {mainNavLinks.map((link) => (
               <li key={link.href}>
                 <Link
@@ -175,13 +179,13 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
             href="/"
             className={`hidden lg:block absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 ${hideLogo ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
-            <img src={logoSrc} alt="Decograph Interiors" className="w-[75px] md:w-[98px] lg:w-[120px] h-auto" />
+            <img data-nav-logo src={logoSrc} alt="Decograph Interiors" className="w-[75px] md:w-[98px] lg:w-[120px] h-auto" />
           </Link>
 
           {/* Contact Us Button (Desktop) */}
           <Link
             href="/contact"
-            className={`hidden lg:flex items-center gap-2 px-5 py-2 text-sm font-normal border transition-colors duration-300 ${
+            className={`century-gothic hidden lg:flex items-center gap-2 px-5 py-2 text-sm font-normal border transition-colors duration-300 ${
               effectiveDark
                 ? "border-decograph-red text-decograph-red hover:bg-decograph-red hover:text-white"
                 : "border-white text-white hover:bg-white hover:text-decograph-red"
@@ -198,7 +202,7 @@ export default function Header({ isDark = false, isWhiteBg = false, hideLogo = f
       <div
         className={`fixed inset-0 bg-white z-40 transition-transform duration-500 ease-in-out lg:hidden flex flex-col justify-start items-start pt-20 px-6 ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
-        <ul className="flex flex-col items-start gap-0 w-full">
+        <ul className="century-gothic flex flex-col items-start gap-0 w-full">
           {mainNavLinks.map((link) => {
             const isActive = isLinkActive(link.href);
             return (

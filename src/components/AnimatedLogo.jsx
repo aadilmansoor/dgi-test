@@ -16,8 +16,7 @@ const ICON_H      = 609 / 1934;   // icon height, relative to logo width
 const ICON_CLIP_R = 80;           // right inset (%) that shows only the icon
 
 const REVEAL_END = 0.45;          // 0 → 45 %: text reveals · 45 → 100 %: fly to navbar
-const NAV_H      = 64;            // header h-16
-const NAV_LOGO_W = 120;           // Header lg:w-[120px]
+const LOGO_RATIO = 1934 / 663;    // logo.png width / height
 
 const lerp    = (a, b, p) => a + (b - a) * p;
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
@@ -38,10 +37,17 @@ export default function AnimatedLogo({ onDockedChange }) {
 
     let startScale, navScale, deltaY;
     const measure = () => {
+      // The navbar logo showing at this screen size (desktop or mobile), sized
+      // from its CSS height when the image hasn't loaded yet.
+      const target = [...document.querySelectorAll("[data-nav-logo]")].find((el) => el.offsetHeight > 0);
+      const navW   = target ? target.offsetWidth || target.offsetHeight * LOGO_RATIO : 120;
+      const rect   = target?.getBoundingClientRect();
+      const navCY  = rect ? rect.top + rect.height / 2 : 32;
+
       const logoW = logo.offsetWidth;                         // CSS clamp resolved
       startScale  = icon.offsetHeight / (logoW * ICON_H);     // logo's icon == Group 36 size
-      navScale    = NAV_LOGO_W / logoW;
-      deltaY      = NAV_H / 2 - window.innerHeight / 2;       // hero centre → navbar centre
+      navScale    = navW / logoW;
+      deltaY      = navCY - window.innerHeight / 2;           // hero centre → navbar logo centre
     };
 
     // One continuous motion, driven by a single scrubbed value t (0 → 1):
@@ -129,7 +135,9 @@ export default function AnimatedLogo({ onDockedChange }) {
           top:       "50%",
           left:      "50%",
           transform: "translate(-50%, -50%)",
-          height:    "clamp(200px, 30vh, 380px)",
+          // 40vw cap: on phones a bigger icon makes the half-revealed logo
+          // wider than the screen while it scales down.
+          height:    "min(clamp(200px, 30vh, 380px), 40vw)",
           width:     "auto",
         }}
       />
@@ -147,7 +155,7 @@ export default function AnimatedLogo({ onDockedChange }) {
           position: "absolute",
           top:      "50%",
           left:     "50%",
-          width:    "clamp(500px, 50vw, 800px)",
+          width:    "min(clamp(500px, 50vw, 800px), 84vw)",
           height:   "auto",
           opacity:  0,
         }}

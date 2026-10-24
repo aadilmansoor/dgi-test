@@ -365,9 +365,10 @@
   font-weight: 400;
 }
 
-/* Century Gothic font stack */
+/* Century Gothic font stack. Century Gothic is only used where it is installed
+   (no web licence yet); Didact Gothic is the closest free match. */
 .century-gothic {
-  font-family: "Century Gothic", "Futura", CenturyGothic, AppleGothic, "Trebuchet MS", sans-serif;
+  font-family: "Century Gothic", CenturyGothic, var(--font-didact-gothic), "Futura", "Trebuchet MS", sans-serif;
 }
 
 /* About Page Heading Style */

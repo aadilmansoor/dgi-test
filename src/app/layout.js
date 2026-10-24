@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Didact_Gothic, Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -19,6 +19,14 @@ const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+// Free stand-in for Century Gothic (see .century-gothic in globals.css) on
+// devices that don't have it installed.
+const didactGothic = Didact_Gothic({
+  variable: "--font-didact-gothic",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata = {
@@ -65,7 +73,7 @@ export default function RootLayout({ children }) {
     // resets scroll on route changes, so new pages open at the top.
     <html lang="en" className="scroll-smooth overscroll-none" data-scroll-behavior="smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} antialiased overscroll-none`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${didactGothic.variable} antialiased overscroll-none`}
       >
         <QueryProvider>
           {children}
